@@ -2,10 +2,19 @@
   "name": "webapp-server",
   "version": "1.0.0",
   "description": "This is the backend for client portal",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "Nodemon index.js"
   },
   "author": "Alapi@2022",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "base64url": "^3.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.0"
+  }
 }
