@@ -1,30 +1,31 @@
-const userRouter = require('express').Router();
-const utils = require('../../../utils/userUtils');
-const { getIdPass } = require('../../../utils/decodeUtils');
-const mongoose = require('mongoose');
+import Router from 'express';
+import {createNewUser} from '../../../utils/userUtils';
+import { getIdPass } from '../../../utils/decodeUtils';
 
+const userRouter = Router();
+import mongoose from 'mongoose';
 const User =  mongoose.model('User');
 
-userRouter.get('/', function (req, res) {
+userRouter.get('/', function (_req, res) {
     res.send('No Get Request')
 })
 
 
 userRouter.post('/', async (req, res) =>{
-    const { email, password} = getIdPass(req);
+    const { email, password} = getIdPass(req.headers);
     const companyName = req.body.companyName;
 
     if(!companyName){
         res.json({ success: false, msg: 'Company Name Required' });
     }
 
-    const newUserObj = utils.createNewUser(email, password, companyName);
+    const newUserObj = createNewUser(email, password, companyName);
     const newUser = new User({...newUserObj});
 
     User.findOne({ email: email }).
-        then((user) => {
+        then((user:any) => {
             if (!user) {
-                newUser.save().then(async (user) => {
+                newUser.save().then(async (_user) => {
                     // const emailjwt = utils.issueJWT(user);
                     // const url = `http://localhost:5000/user/verify/confirmation/${emailjwt.token}`
                     // console.log(emailjwt.token)
@@ -35,7 +36,7 @@ userRouter.post('/', async (req, res) =>{
             else if (!!user && !user.emaiConfirmed && !user.phoneConfirmed) {
                 user.delete();
                 newUser.save()
-                    .then(async (user) => {
+                    .then(async (_user) => {
                         // const emailjwt = utils.issueJWT(user, 'email');
                         // const url = `http://localhost:5000/user/verify/confirmation/${emailjwt.token}`
                         // SendMail({ url: url })

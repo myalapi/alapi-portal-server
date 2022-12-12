@@ -1,4 +1,7 @@
-const router = require('express').Router();
+import Router from 'express';
+const router = Router();
+
+
 
 router.use('/authorize', require('./authorization'));
 

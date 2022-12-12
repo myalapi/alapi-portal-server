@@ -1,4 +1,6 @@
-const router = require('express').Router();
+import Router from 'express';
+const router = Router();
+
 
 // router.use('/login', require('./login'));
 // router.use('/login/recover', require('./recover'));

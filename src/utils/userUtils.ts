@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
+import crypto, { BinaryLike } from 'crypto';
+import jwt, { VerifyOptions } from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 
 const pathToPrivateKey = path.join(__dirname, '..', 'keys', 'id_rsa_priv.pem');
 const PRIV_KEY = fs.readFileSync(pathToPrivateKey, 'utf8');
@@ -10,14 +10,15 @@ const pathToPublicKey = path.join(__dirname, '..', 'keys', 'id_rsa_pub.pem');
 const PUB_KEY = fs.readFileSync(pathToPublicKey, 'utf8');
 
 
-function validPassword(password, hash, salt) {
+export function validPassword(password:BinaryLike, hash:String, salt:BinaryLike) {
   var hashVerify = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
   return hash === hashVerify;
 }
 
-function createNewUser(email, password, companyName) {
+export function createNewUser(email:String, password:BinaryLike, companyName:String) {
   const saltHash = genPassword(password);
   const apiHash = genAPIKey();
+  const link = genLink();
 
   const userObj = {
     email: email,
@@ -26,12 +27,13 @@ function createNewUser(email, password, companyName) {
     hash: saltHash.hash,
     emailConfirmed: false,
     phoneConfirmed: false,
-    apiKey: apiHash.apiKey
+    apiKey: apiHash.apiKey,
+    link : link.link
   }
   return userObj;
 }
 
-function genPassword(password) {
+export function genPassword(password:BinaryLike) {
   var salt = crypto.randomBytes(32).toString('hex');
   var genHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
 
@@ -41,10 +43,10 @@ function genPassword(password) {
   };
 }
 
-function genAPIKey(){
+export function genAPIKey(){
   
   var apiKey = crypto.randomBytes(12).toString('hex');
-  var prefix = apiKey.substring(6);
+  // var prefix = apiKey.substring(6);
   // var apiSalt =crypto.randomBytes(32).toString('hex');
   // var genApiHash = crypto.pbkdf2Sync(apiKey, salt, 10000, 32, 'sha512').toString('hex');
   return {
@@ -55,9 +57,16 @@ function genAPIKey(){
   }
 
 }
-function issueJWT(userId, aud) {
+export function genLink(){
+  var link = crypto.randomBytes(12).toString('hex');
+  // var prefix = link.substring(6);
+  return {
+    link: link,
+  }
+}
+export function issueJWT(userId:String, aud:String) {
   const _id = userId;
-  expiresIn = '1d'
+  const expiresIn = '1d'
 
   const payload = {
     sub: _id,
@@ -74,33 +83,27 @@ function issueJWT(userId, aud) {
   }
 }
 
-function verifyToken(token, aud) {
+export function verifyToken(token: string, aud: string | string[] | undefined) {
   try {
-    const results = jwt.verify(token, PUB_KEY, { algorithm: 'RS256' });
+    const results: any = jwt.verify(token, PUB_KEY, { algorithm: 'RS256' } as VerifyOptions);
     if (results.aud == aud) {
       return { ...results, status: true }
     } else {
       return { status: false }
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return { status: false }
   }
 }
 
-function verifyTokenWithoutAud(token) {
+export function verifyTokenWithoutAud(token: string) {
   try {
-    const results = jwt.verify(token, PUB_KEY, { algorithm: 'RS256' });
+    const results:any = jwt.verify(token, PUB_KEY, { algorithm: 'RS256' } as VerifyOptions);
     return { ...results, status: true }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return { status: false }
   }
 }
 
-module.exports.validPassword = validPassword;
-module.exports.genPassword = genPassword;
-module.exports.issueJWT = issueJWT;
-module.exports.verifyToken = verifyToken;
-module.exports.verifyTokenWithoutAud = verifyTokenWithoutAud;
-module.exports.createNewUser = createNewUser;
