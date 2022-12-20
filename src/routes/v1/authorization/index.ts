@@ -2,7 +2,7 @@ import Router from 'express';
 const router = Router();
 
 
-// router.use('/login', require('./login'));
+router.use('/login', require('./login'));
 // router.use('/login/recover', require('./recover'));
 router.use('/signup', require('./signup'));
 // router.use('/verify', require('./verify'));

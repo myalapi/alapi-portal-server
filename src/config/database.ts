@@ -1,17 +1,17 @@
-const mongoose = require('mongoose');
+import mongoose, { ConnectOptions } from 'mongoose';
 
 require('dotenv').config();
 
 
-const devConnection = process.env.DB_STRING;
-const prodConnection = process.env.DB_STRING_PROD;
+const devConnection: string = process.env.DB_STRING as string;
+const prodConnection: string = process.env.DB_STRING_PROD as string;
 
 // Connect to the correct environment database
 if (process.env.NODE_ENV === 'production') {
     mongoose.connect(prodConnection, {
         useNewUrlParser: true,
         useUnifiedTopology: true
-    });
+    } as ConnectOptions);
 
     mongoose.connection.on('connected', () => {
         console.log('Database connected');
@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'production') {
     mongoose.connect(devConnection, {
         useNewUrlParser: true,
         useUnifiedTopology: true
-    });
+    } as ConnectOptions);
 
     mongoose.connection.on('connected', () => {
         console.log('Database connected');

@@ -13,13 +13,13 @@ userRouter.get('/', function (_req, res) {
 
 userRouter.post('/', async (req, res) =>{
     const { email, password} = getIdPass(req.headers);
-    const companyName = req.body.companyName;
+    const {companyName, name} = req.body;
 
-    if(!companyName){
-        res.json({ success: false, msg: 'Company Name Required' });
+    if(!companyName || !name){
+        res.json({ success: false, msg: 'Company Name or Name Required' });
     }
 
-    const newUserObj = createNewUser(email, password, companyName);
+    const newUserObj = createNewUser(email, password, companyName, name);
     const newUser = new User({...newUserObj});
 
     User.findOne({ email: email }).
