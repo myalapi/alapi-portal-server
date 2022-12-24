@@ -30,7 +30,7 @@ userRouter.post("/", async (req, res) => {
       const isValid = validPassword(password, user.hash, user.salt);
 
       if (isValid) {
-        const tokenObject = issueJWT(user);
+        const tokenObject = issueJWT(user._id);
         let options: any = {
           sameSite: "None",
           secure: true,

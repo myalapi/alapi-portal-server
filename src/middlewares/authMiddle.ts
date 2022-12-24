@@ -1,4 +1,3 @@
-import { log } from "console";
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import { verifyTokenWithoutAud } from "../utils/userUtils";
@@ -10,7 +9,6 @@ export default async function authMiddle(
   next: NextFunction
 ): Promise<any> {
   const Cookies = req.cookies;
-  log(Cookies);
   const jwt = Cookies.jwt;
   const status = verifyTokenWithoutAud(jwt);
 

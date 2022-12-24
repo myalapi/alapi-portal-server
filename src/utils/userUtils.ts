@@ -66,6 +66,8 @@ export function genClientKeys() {
 }
 export function issueJWT(userId: String) {
   const _id = userId;
+  console.log(userId);
+  
   const expiresIn = "1d";
 
   const payload = {
@@ -76,6 +78,7 @@ export function issueJWT(userId: String) {
   };
 
   const signedToken = jwt.sign(payload, PRIV_KEY, { algorithm: "RS256" });
+  
 
   return {
     token: signedToken,
