@@ -1,13 +1,5 @@
 import crypto, { BinaryLike } from "crypto";
-import jwt, { VerifyOptions } from "jsonwebtoken";
-import fs from "fs";
-import path from "path";
 
-const pathToPrivateKey = path.join(__dirname, "..", "keys", "id_rsa_priv.pem");
-const PRIV_KEY = fs.readFileSync(pathToPrivateKey, "utf8");
-
-const pathToPublicKey = path.join(__dirname, "..", "keys", "id_rsa_pub.pem");
-const PUB_KEY = fs.readFileSync(pathToPublicKey, "utf8");
 
 export function validPassword(
   password: BinaryLike,
@@ -63,53 +55,4 @@ export function genClientKeys() {
     clientId: clientId,
     clientSecret: clientSecret,
   };
-}
-export function issueJWT(userId: String) {
-  const _id = userId;
-  console.log(userId);
-  
-  const expiresIn = "1d";
-
-  const payload = {
-    sub: _id,
-    iat: Date.now(),
-    // aud: aud,
-    exp: Math.floor(Date.now() / 1000) + 2 * 60 * 60,
-  };
-
-  const signedToken = jwt.sign(payload, PRIV_KEY, { algorithm: "RS256" });
-  
-
-  return {
-    token: signedToken,
-    expiresIn: expiresIn,
-  };
-}
-
-export function verifyToken(token: string, _aud?: string | string[] | undefined) {
-  try {
-    jwt.verify(token, PUB_KEY, {
-      algorithm: "RS256",
-    } as VerifyOptions);
-    // if (results.aud == aud) {
-    //   return { ...results, status: true };
-    // } else {
-      return { status: false };
-    // }
-  } catch (error) {
-    console.log(error);
-    return { status: false };
-  }
-}
-
-export function verifyTokenWithoutAud(token: string) {
-  try {
-    const results: any = jwt.verify(token, PUB_KEY, {
-      algorithm: "RS256",
-    } as VerifyOptions);
-    return { ...results, status: true };
-  } catch (error) {
-    console.log(error);
-    return { status: false };
-  }
 }

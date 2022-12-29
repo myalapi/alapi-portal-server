@@ -1,7 +1,8 @@
 import Router from "express";
 import mongoose from "mongoose";
 import { getIdPass } from "../../../utils/decodeUtils";
-import { issueJWT, validPassword } from "../../../utils/userUtils";
+import { validPassword } from "../../../utils/userUtils";
+import { issueJWT } from "../../../utils/jwtUtils";
 
 const User = mongoose.model("User");
 
@@ -15,18 +16,9 @@ userRouter.post("/", async (req, res) => {
   const { email, password } = getIdPass(req.headers);
   User.findOne({ email: email })
     .then(async (user: any) => {
-      if (!user) {
-        res.json({ success: false, msg: "e2" });
-        return;
-        // e2=InvalidEmail
-      }
-    //   if (!!user && !user.emailConfirmed) {
-    //     res.json({ success: false, msg: "e3" });
-    //     return;
-    //     // e3=UnconfirmedEmail
-    //   }
-
-      // Function defined at bottom of app.js
+      //   if (!user.emailConfirmed) {
+      //    throw new Error("Email is not confirmed");
+      //   }
       const isValid = validPassword(password, user.hash, user.salt);
 
       if (isValid) {
@@ -38,32 +30,20 @@ userRouter.post("/", async (req, res) => {
           httpOnly: true, // The cookie only accessible by the web server
           // Indicates if the cookie should be signed
         };
-        await User.updateOne(
-          { _id: user._id },
-          { $set: { token: tokenObject.token, expiresIn: tokenObject.expiresIn } }
-        )
-          .then(() => {
-            res
-              .cookie("jwt", tokenObject.token, options)
-              .status(200)
-              .json({
-                success: true,
-                user: { name: user.name, email: user.email },
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-
-            res.sendStatus(500);
+        res
+          .cookie("jwt", tokenObject.token, options)
+          .status(200)
+          .json({
+            success: true,
+            user: { name: user.name, email: user.email, companyName: user.companyName},
           });
       } else {
-        res.json({ success: false, msg: "e1" });
-        // e1=invalidpassword;
+        throw new Error("Invalid Password");
       }
     })
     .catch((err) => {
       console.log(err);
-      return res.json({ success: false, msg: "e2" });
+      return res.json({ success: false, msg: err.message });
     });
 });
 

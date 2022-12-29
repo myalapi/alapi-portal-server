@@ -3,8 +3,7 @@ import authMiddle from "../../../middlewares/authMiddle";
 const router = Router();
 
 router.get("/", authMiddle, (req, res) => {
-  const authProp = req.body.authProp;
-  const user = authProp.user;
+  const user = req.body.user;
   res.json({success:true, clientId: user.clientId, clientSecret: user.clientSecret});
 });
 
