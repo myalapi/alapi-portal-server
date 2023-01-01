@@ -22,7 +22,7 @@ userRouter.post("/", async (req, res) => {
       const isValid = validPassword(password, user.hash, user.salt);
 
       if (isValid) {
-        const tokenObject = issueJWT(user._id);
+        const token = issueJWT(user._id);
         let options: any = {
           sameSite: "None",
           secure: true,
@@ -31,7 +31,7 @@ userRouter.post("/", async (req, res) => {
           // Indicates if the cookie should be signed
         };
         res
-          .cookie("jwt", tokenObject.token, options)
+          .cookie("jwt", token, options)
           .status(200)
           .json({
             success: true,

@@ -10,8 +10,7 @@ const UserSchema = new mongoose.Schema({
     hash: String,
     emailConfirmed: Boolean,
     phoneConfirmed: Boolean,
-    token: String,
-    expiresIn:String
+    recoverToken: String,
 });
 
 mongoose.model('User', UserSchema, 'users');

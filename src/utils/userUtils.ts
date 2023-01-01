@@ -1,5 +1,6 @@
 import crypto, { BinaryLike } from "crypto";
-
+import { issueJWT } from "./jwtUtils";
+import { mail, mailOptions } from "./mail";
 
 export function validPassword(
   password: BinaryLike,
@@ -55,4 +56,39 @@ export function genClientKeys() {
     clientId: clientId,
     clientSecret: clientSecret,
   };
+}
+
+export function genRecoverToken() {
+  return crypto.randomBytes(32).toString("hex");
+}
+
+export async function sendVerifEmail(userId: any) {
+  const emailjwt = issueJWT(userId);
+  const url = `${process.env.URL}/authorize/verify/${emailjwt}`;
+  const mailOption = mailOptions(
+    '"Alapi" support@alapi.co',
+    "pulkit0729@gmail.com",
+    "Hello world?",
+    "url",
+    { "x-myheader": "test header" },
+    `<div>Hello world?
+    <a href=${url}>Button</a></div>`
+  );
+  await mail(mailOption);
+}
+
+export async function sendResetPasswordEmail(recoverToken: string) {
+  const url = `${process.env.WEB_URL}/authorize/recover/${recoverToken}`;
+  console.log(url);
+  
+  const mailOption = mailOptions(
+    '"Alapi" support@alapi.co',
+    "pulkit0729@gmail.com",
+    "Hello world?",
+    "url",
+    { "x-myheader": "test header" },
+    `<div>Hello world?
+    <a href=${url}>Button</a></div>`
+  );
+  await mail(mailOption);
 }
