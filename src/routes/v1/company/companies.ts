@@ -6,17 +6,33 @@ const Merchants = mongoose.model("Merchants");
 
 const router = Router();
 
-router.get("/",authMiddle, async (req, res) => {
-    const merchants = req.body.user.merchants;
-    const merchs= await Merchants.find({"id":{$in:merchants}}, 'merchantId merchantName platforms createdOn');
-    const finalMerchs = [];
-    for(var i=0; i<merchs.length; i++){
-        const m:any = merchs[i];
-        finalMerchs.push({id: m.mechantId, name:m.merchantName, createdOn:m.createdOn, platforms:Object.keys(m.platforms) });
-    }
-    console.log(finalMerchs);
-    res.send(finalMerchs);
-    
+router.get("/", authMiddle, async (req, res) => {
+  const merchants = req.body.user.merchants;
+  const merchs = await Merchants.find(
+    { _id: { $in: merchants } },
+    "merchantId merchantName platforms createdOn"
+  );
+  const finalMerchs = [];
+  for (var i = 0; i < merchs.length; i++) {
+    const m: any = merchs[i];
+    finalMerchs.push({
+      id: m.mechantId,
+      name: m.merchantName,
+      createdOn: m.createdOn,
+      platforms: Object.keys(m.platforms),
+    });
+  }
+  res.send(finalMerchs);
+});
+
+router.get("/search", authMiddle, async (req, res) => {
+  const merchants = req.body.user.merchants;
+  const query = req.query.search;
+  const merch = await Merchants.find(
+    { merchantName: { $regex: query, $options: "i" }, _id: { $in: merchants } },
+    "merchantId merchantName platforms createdOn"
+  );
+  res.send(merch);
 });
 
 module.exports = router;
