@@ -8,6 +8,7 @@ dotenv.config()
 require('./config/database');
 require('./models/user');
 require('./models/merchant');
+require('./models/platform');
 
 
 const PORT = process.env.PORT || 8000;

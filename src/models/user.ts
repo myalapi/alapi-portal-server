@@ -1,15 +1,24 @@
 const mongoose = require('mongoose');
 
+const Platform = new mongoose.Schema({
+    platformKey: String,
+    credentials: Object,
+    isEnabled: Boolean,
+    isConfigured: Boolean
+});
+
 const UserSchema = new mongoose.Schema({
     email: String,
-    name: String,
+    name:String,
     companyName: String,
-    clientId: String,
-    clientSecret: String,
     salt: String,
     hash: String,
     emailConfirmed: Boolean,
     phoneConfirmed: Boolean,
+    clientId: String,
+    clientSecret: String,
+    platforms: [Platform],
+    merchants: Array,
     recoverToken: String,
 });
 

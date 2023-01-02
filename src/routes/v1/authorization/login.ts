@@ -16,9 +16,9 @@ userRouter.post("/", async (req, res) => {
   const { email, password } = getIdPass(req.headers);
   User.findOne({ email: email })
     .then(async (user: any) => {
-      //   if (!user.emailConfirmed) {
-      //    throw new Error("Email is not confirmed");
-      //   }
+      if (!user.emailConfirmed) {
+        throw new Error("Email is not confirmed");
+      }
       const isValid = validPassword(password, user.hash, user.salt);
 
       if (isValid) {
@@ -35,7 +35,11 @@ userRouter.post("/", async (req, res) => {
           .status(200)
           .json({
             success: true,
-            user: { name: user.name, email: user.email, companyName: user.companyName},
+            user: {
+              name: user.name,
+              email: user.email,
+              companyName: user.companyName,
+            },
           });
       } else {
         throw new Error("Invalid Password");
