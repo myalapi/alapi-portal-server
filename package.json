@@ -12,6 +12,7 @@
   "author": "Alapi@2022",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.245.0",
     "base64url": "^3.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

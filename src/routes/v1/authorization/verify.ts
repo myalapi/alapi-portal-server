@@ -18,7 +18,7 @@ router.get("/:token", async (req, res) => {
     console.log(result);
     
     
-    return res.redirect("http://localhost:3000/login");
+    return res.redirect(`${process.env.WEB_URL}`);
   } catch (error) {
     console.log(error);
     return res.send("Url is invalid, PLease Try Again");

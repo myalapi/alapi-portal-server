@@ -62,12 +62,12 @@ export function genRecoverToken() {
   return crypto.randomBytes(32).toString("hex");
 }
 
-export async function sendVerifEmail(userId: any) {
+export async function sendVerifEmail(userId: any, email:String) {
   const emailjwt = issueJWT(userId);
   const url = `${process.env.URL}/authorize/verify/${emailjwt}`;
   const mailOption = mailOptions(
     '"Alapi" support@alapi.co',
-    "pulkit0729@gmail.com",
+    email,
     "Hello world?",
     "url",
     { "x-myheader": "test header" },

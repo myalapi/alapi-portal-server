@@ -18,33 +18,32 @@ userRouter.post("/", async (req, res) => {
     return res.json({ success: false, msg: "Company Name or Name Required" });
   }
 
-  const newUser = new User({
+  const newUser:any = new User({
     ...createNewUser(email, password, companyName, name),
   });
 
-  User.findOne({ email })
+  User.findOne({ email:email })
     .then(async (user: any) => {
       if (!user) {
         console.log("User not found");
         
         await newUser.save();
-        await sendVerifEmail(newUser.id);
+        await sendVerifEmail(newUser.id, newUser.email);
         return res.json({ success: true, msg: "Account Created successfully" });
       } else if (!!user && !user.emailConfirmed) {
         console.log("User found but not confirmed");        
         await user.delete();
         await newUser.save();
-        await sendVerifEmail(newUser.id);
+        await sendVerifEmail(newUser.id, newUser.email);
         return res.json({ success: true, msg: "Account Created successfully" });
       } else {
         console.log("User confirmed");
-
         return res.json({ success: false, msg: "Account already exists" });
       }
     })
     .catch((err) => {
       console.log(err);
-      return res.status(401).json({ success: false, msg: "Could not connect" });
+      return res.status(401).json({ msg: "Could not connect" });
     });
     return;
 });

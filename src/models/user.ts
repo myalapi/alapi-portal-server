@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
+
 const Platform = new mongoose.Schema({
     platformKey: String,
-    credentials: Object,
+    awsSecretName: String,
     isEnabled: Boolean,
     isConfigured: Boolean
 });

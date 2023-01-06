@@ -21,7 +21,7 @@ router.post("/", authMiddle, async (req, res) => {
   } = req.body;
   try {
     const isValid = validPassword(currentPassword, user.hash, user.salt);
-    if (!isValid || newPassword === confirmPassword) {
+    if (!isValid || newPassword !== confirmPassword) {
       throw new Error("Invalid Password");
     }
     const saltHash = genPassword(newPassword);

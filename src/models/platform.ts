@@ -1,13 +1,17 @@
-import mongoose from 'mongoose';
-
-const PlatformSchema = new mongoose.Schema({
-    platformKey: String,
-    platformName: String,
-    platformUrl:String,
-    icon:String,
-    type: String,
-    credentials:Array,
-    
+import mongoose from "mongoose";
+const CredentialSchema = new mongoose.Schema({
+    name:String,
+    type:String,
+    value:String,
 });
 
-mongoose.model('Platforms', PlatformSchema, 'platforms');
+const PlatformSchema = new mongoose.Schema({
+  platformKey: String,
+  platformName: String,
+  platformUrl: String,
+  icon: String,
+  type: String,
+  credentials: [CredentialSchema],
+});
+
+mongoose.model("Platforms", PlatformSchema, "platforms");
