@@ -52,7 +52,7 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
   }
 });
 
-router.get("/:platformKey/credentials", async (req, res) => {
+router.get("/credentials/:platformKey",authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
   const user = req.body.user;
 
@@ -63,10 +63,11 @@ router.get("/:platformKey/credentials", async (req, res) => {
     let platforms = user.platforms;
     for (var i = 0; i < platforms.length; i++) {
       if (platforms[i].platformKey === platformKey) {
-        await awsUtils.getSecret(platforms[i].awsSecretName)
+        const creds = await awsUtils.getSecret(platforms[i].awsSecretName);
+        return res.send({ success: true, credentials: creds });
       }
     }
-    return res.send({ isConfigured: false});
+    return res.send({ isConfigured: false });
   } catch (error: any) {
     console.log(error);
     return res.send(error.message);
@@ -86,7 +87,7 @@ router.post("/create", authMiddle, async (req, res) => {
     }
 
     const secretName = await awsUtils.createSecret(
-      `${user.id.splice(6) + platformKey}`,
+      `${(user.id).slice(6) + platformKey}`,
       credentials
     );
     const platform = {
