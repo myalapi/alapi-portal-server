@@ -21,7 +21,7 @@ router.get("/", authMiddle, async (req, res) => {
       id: m.mechantId,
       name: m.merchantName,
       createdOn: m.createdOn,
-      platforms: Object.keys(m.platforms),
+      platforms: m.platforms ? Object.keys(m.platforms) : null,
     });
   }
   res.send({ companies: finalMerchs });
@@ -41,7 +41,7 @@ router.get("/search", authMiddle, async (req, res) => {
       id: m.mechantId,
       name: m.merchantName,
       createdOn: m.createdOn,
-      platforms: Object.keys(m.platforms),
+      platforms: m.platforms ? Object.keys(m.platforms) : null,
     });
   }
   res.send({ companies: merchs });
