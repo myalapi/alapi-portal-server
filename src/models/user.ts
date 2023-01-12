@@ -23,4 +23,5 @@ const UserSchema = new mongoose.Schema({
     recoverToken: String,
 });
 
-mongoose.model('User', UserSchema, 'users');
+const User = mongoose.model('User', UserSchema, 'users');
+export default User;
