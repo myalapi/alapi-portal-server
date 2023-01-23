@@ -23,7 +23,7 @@ userRouter.post("/", async (req, res) => {
       }
       const recoverToken = genRecoverToken();
       await user.updateOne({ recoverToken });
-      await sendResetPasswordEmail(recoverToken);
+      await sendResetPasswordEmail(recoverToken,email);
       return res.send(200);
     })
     .catch((error) => {

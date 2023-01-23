@@ -77,13 +77,13 @@ export async function sendVerifEmail(userId: any, email:String) {
   await mail(mailOption);
 }
 
-export async function sendResetPasswordEmail(recoverToken: string) {
-  const url = `${process.env.WEB_URL}/authorize/recover/${recoverToken}`;
+export async function sendResetPasswordEmail(recoverToken: string, email:String) {
+  const url = `${process.env.WEB_URL}/recover/${recoverToken}`;
   console.log(url);
   
   const mailOption = mailOptions(
     '"Alapi" support@alapi.co',
-    "pulkit0729@gmail.com",
+    email,
     "Hello world?",
     "url",
     { "x-myheader": "test header" },

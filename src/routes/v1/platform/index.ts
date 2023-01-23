@@ -52,9 +52,9 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
   }
 });
 
-router.get("/credentials/:platformKey",authMiddle, async (req, res) => {
+router.get("/credentials/:platformKey", authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
-  const user = req.body.user;
+  const user: any = req.body.user;
 
   try {
     if (platformKey === undefined || platformKey === null) {
@@ -113,10 +113,10 @@ router.put("/update", authMiddle, async (req, res) => {
   const { user, platformKey, isEnabled } = req.body;
   try {
     if (
-      platformKey == null ||
+      platformKey === null ||
       platformKey === undefined ||
       isEnabled === undefined ||
-      isEnabled == ""
+      isEnabled === ""
     ) {
       throw new Error("Platform Id not found");
     }
@@ -125,14 +125,18 @@ router.put("/update", authMiddle, async (req, res) => {
       if (platforms[i].platformKey === platformKey) {
         platforms[i].isEnabled = isEnabled;
         await user.updateOne({ platforms: platforms });
-        return res.sendStatus(200);
+        return res.send({ success: true });
       }
     }
     throw new Error("Invalid Platform ID: " + platformKey);
   } catch (error: any) {
+
     console.log(error);
 
-    return res.send(error.message);
+    return res.send({
+      success: false,
+      message: error.message
+    });
   }
 });
 
