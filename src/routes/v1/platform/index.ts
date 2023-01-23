@@ -52,7 +52,7 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
   }
 });
 
-router.get("/credentials/:platformKey",authMiddle, async (req, res) => {
+router.get("/credentials/:platformKey", authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
   const user = req.body.user;
 
@@ -87,7 +87,7 @@ router.post("/create", authMiddle, async (req, res) => {
     }
 
     const secretName = await awsUtils.createSecret(
-      `${(user.id).slice(6) + platformKey}`,
+      `${user.id.slice(6) + platformKey}`,
       credentials
     );
     const platform = {
@@ -102,6 +102,28 @@ router.post("/create", authMiddle, async (req, res) => {
     }
     platforms.push(platform);
     await user.updateOne({ platforms: platforms });
+    return res.send(200);
+  } catch (error: any) {
+    console.log(error);
+    return res.send(error.message);
+  }
+});
+
+router.post("/update/credentials", authMiddle, async (req, res) => {
+  const { user, platformKey, credentials } = req.body;
+  try {
+    if (
+      platformKey === undefined ||
+      platformKey === null ||
+      credentials == null ||
+      credentials === undefined
+    ) {
+      throw new Error("Platform Key not found");
+    }
+    await awsUtils.updateSecret(
+      `${user.id.slice(6) + platformKey}`,
+      credentials
+    );
     return res.send(200);
   } catch (error: any) {
     console.log(error);

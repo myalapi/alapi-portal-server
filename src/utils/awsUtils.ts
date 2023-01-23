@@ -2,6 +2,7 @@ import {
   SecretsManagerClient,
   GetSecretValueCommand,
   CreateSecretCommand,
+  UpdateSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
 
 export async function createSecret(secretName: string, creds: Object) {
@@ -52,4 +53,28 @@ export async function getSecret(secretName: string) {
   client.destroy();
   const secret = response.SecretString;
   return JSON.parse(secret as string);
+}
+
+export async function updateSecret(secretName: string, creds: Object) {
+  const client = new SecretsManagerClient({
+    region: "us-east-1",
+    credentials: {
+      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
+      secretAccessKey: "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",
+    },
+  });
+  let response;
+
+  try {
+    response = await client.send(
+      new UpdateSecretCommand({
+        SecretId: secretName,
+        SecretString: JSON.stringify(creds),
+      })
+    );
+  } catch (error) {
+    throw error;
+  }
+  client.destroy();
+  return response.Name;
 }
