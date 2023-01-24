@@ -21,7 +21,7 @@ router.get("/", authMiddle, async (req, res) => {
       if (connectedPlatform.platformKey === platforms[j].platformKey) {
         platforms[j] = {
           ...connectedPlatform.toObject(),
-          ...platforms[j].toObject(),
+          ...(platforms[j].toObject()),
         };
       }
     }

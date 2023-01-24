@@ -23,8 +23,20 @@ export async function createSecret(secretName: string, creds: Object) {
         SecretString: JSON.stringify(creds),
       })
     );
-  } catch (error) {
-    throw error;
+  } catch (error:any) {
+    console.log(error.name);
+    
+    if (error.name === "InvalidRequestException") {
+      deleteSecret(secretName);
+      response = await client.send(
+        new CreateSecretCommand({
+          Name: secretName,
+          SecretString: JSON.stringify(creds),
+        })
+      );
+    } else {
+      throw error;
+    }
   }
   client.destroy();
   return response.Name;
@@ -94,6 +106,7 @@ export async function deleteSecret(secretName: string) {
     response = await client.send(
       new DeleteSecretCommand({
         SecretId: secretName,
+        ForceDeleteWithoutRecovery: true,
       })
     );
   } catch (error) {
