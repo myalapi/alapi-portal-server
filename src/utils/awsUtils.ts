@@ -8,7 +8,7 @@ import {
 
 export async function createSecret(secretName: string, creds: Object) {
   const client = new SecretsManagerClient({
-    region: "us-east-1",
+    region: "ap-south-1",
     credentials: {
       accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
       secretAccessKey: "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",
@@ -44,7 +44,7 @@ export async function createSecret(secretName: string, creds: Object) {
 
 export async function getSecret(secretName: string) {
   const client = new SecretsManagerClient({
-    region: "us-east-1",
+    region: "ap-south-1",
     credentials: {
       accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
       secretAccessKey: "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",
@@ -70,7 +70,7 @@ export async function getSecret(secretName: string) {
 
 export async function updateSecret(secretName: string, creds: Object) {
   const client = new SecretsManagerClient({
-    region: "us-east-1",
+    region: "ap-south-1",
     credentials: {
       accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
       secretAccessKey: "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",
@@ -94,7 +94,7 @@ export async function updateSecret(secretName: string, creds: Object) {
 
 export async function deleteSecret(secretName: string) {
   const client = new SecretsManagerClient({
-    region: "us-east-1",
+    region: "ap-south-1",
     credentials: {
       accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
       secretAccessKey: "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",

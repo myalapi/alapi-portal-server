@@ -3,10 +3,10 @@ const router = Router();
 import authMiddle from "../../../middlewares/authMiddle";
 import * as awsUtils from "../../../utils/awsUtils";
 
-router.get("/:platformKey",authMiddle, async (req, res) => {
+router.get("/:platformKey", authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
-  console.log(req.body);
-  
+  // console.log(req.body);
+
   const user: any = req.body.user;
 
   try {
@@ -83,12 +83,15 @@ router.put("/", authMiddle, async (req, res) => {
     return res.send(200);
   } catch (error: any) {
     console.log(error);
-    return res.send(error.message);
+    return res.sendStatus(error.message);
   }
 });
 
-router.delete("/", authMiddle, async (req, res) => {
-  const { user, platformKey } = req.body;
+router.delete("/:platformKey", authMiddle, async (req, res) => {
+  const platformKey = req.params.platformKey;
+
+  const user: any = req.body.user;
+
   try {
     if (platformKey === undefined || platformKey === null) {
       throw new Error("Platform Key not found");
@@ -103,10 +106,10 @@ router.delete("/", authMiddle, async (req, res) => {
         break;
       }
     }
-    return res.send(200);
+    return res.sendStatus(200);
   } catch (error: any) {
     console.log(error);
-    return res.send(error.message);
+    return res.sendStatus(error.message);
   }
 });
 
