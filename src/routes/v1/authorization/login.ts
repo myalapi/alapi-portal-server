@@ -39,6 +39,7 @@ userRouter.post("/", async (req, res) => {
               name: user.name,
               email: user.email,
               companyName: user.companyName,
+              userId: user._id,
             },
           });
       } else {
