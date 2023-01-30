@@ -41,6 +41,16 @@ router.post("/", authMiddle, async (req, res) => {
     ) {
       throw new Error("Platform Key not found");
     }
+    let platforms = user.platforms;
+    if (platforms === undefined || platforms === null) {
+      platforms = [];
+    } else {
+      for (var i = 0; i < platforms.length; i++) {
+        if (platforms[i].platformKey.localeCompare(platformKey) === 0) {
+          throw new Error("Platform Already Exists");
+        }
+      }
+    }
 
     const secretName = await awsUtils.createSecret(
       `${user.id.slice(6) + platformKey}`,
@@ -52,16 +62,16 @@ router.post("/", authMiddle, async (req, res) => {
       isEnabled: true,
       isConfigured: true,
     };
-    let platforms = user.platforms;
-    if (platforms === undefined || platforms === null) {
-      platforms = [];
-    }
+
     platforms.push(platform);
     await user.updateOne({ platforms: platforms });
-    return res.send(200);
+    return res.send({
+      success: true,
+      message: "platform created successfully",
+    });
   } catch (error: any) {
     console.log(error);
-    return res.send(error.message);
+    return res.send({ success: false, message: error.message });
   }
 });
 
@@ -100,8 +110,7 @@ router.delete("/:platformKey", authMiddle, async (req, res) => {
     let platforms = user.platforms;
     for (var i = 0; i < platforms.length; i++) {
       if (platforms[i].platformKey === platformKey) {
-        platforms[i].isConfigured = false;
-        platforms[i].awsSecretName = "";
+        platforms.splice(i, 1);
         await user.updateOne({ platforms: platforms });
         break;
       }
