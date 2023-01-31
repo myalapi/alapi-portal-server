@@ -8,5 +8,6 @@ router.use('/recover', require('./authorization/recover'));
 router.use('/user', require('./user'));
 router.use('/company', require('./company'));
 router.use('/platform', require('./platform'));
+router.use('/link', require('./link'));
 
 module.exports = router;

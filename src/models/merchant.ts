@@ -16,4 +16,5 @@ const MerchantSchema = new mongoose.Schema({
     platforms: Object
 });
 
-mongoose.model('Merchants', MerchantSchema, 'merchants');
+const Merchants= mongoose.model('Merchants', MerchantSchema, 'merchants');
+export default Merchants;

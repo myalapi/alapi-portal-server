@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 const CredentialSchema = new mongoose.Schema({
-    name:String,
-    type:String,
-    value:String,
+  name: String,
+  type: String,
+  value: String,
 });
 
 const PlatformSchema = new mongoose.Schema({
@@ -14,4 +14,5 @@ const PlatformSchema = new mongoose.Schema({
   credentials: [CredentialSchema],
 });
 
-mongoose.model("Platforms", PlatformSchema, "platforms");
+const Platforms = mongoose.model("Platforms", PlatformSchema, "platforms");
+export default Platforms;

@@ -22,13 +22,13 @@ router.get("/", authMiddle, async (req, res) => {
         id: m.mechantId,
         name: m.merchantName,
         createdOn: m.createdOn,
-        platforms: m.platforms?Object.keys(m.platforms):null,
+        platforms: m.platforms ? Object.keys(m.platforms) : null,
       });
     }
     res.send({ companies: finalMerchs });
   } catch (error) {
     console.log(error);
-    
+
     res.send({ success: false, error: error });
   }
 });
@@ -51,7 +51,7 @@ router.get("/search", authMiddle, async (req, res) => {
         id: m.mechantId,
         name: m.merchantName,
         createdOn: m.createdOn,
-        platforms: m.platforms?Object.keys(m.platforms):null,
+        platforms: m.platforms ? Object.keys(m.platforms) : null,
       });
     }
     res.send({ companies: merchs });
@@ -65,7 +65,8 @@ router.post("/create", authMiddle, async (req, res) => {
   try {
     const { merchantName } = req.body;
 
-    if (typeof merchantName !== "string" || (merchantName.length === 0)) return res.status(401).json({ success: false, message: "Please provide a valid merchantName" });
+    if (typeof merchantName !== "string" || (merchantName.length === 0))
+      return res.status(401).json({ success: false, message: "Please provide a valid merchantName" });
 
     const merchant = await Merchants.create({
       merchantName,
