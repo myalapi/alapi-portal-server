@@ -1,13 +1,14 @@
 import Router from "express";
 import authMiddle from "../../../middlewares/authMiddle";
 import mongoose from "mongoose";
-import User from "../../../models/user";
 
 const Merchants = mongoose.model("Merchants");
-
+const User = mongoose.model("User");
 
 const router = Router();
 
+
+//Get all the merchants from user
 router.get("/", authMiddle, async (req, res) => {
   const merchants = req.body.user.merchants;
   try {
@@ -65,8 +66,13 @@ router.post("/create", authMiddle, async (req, res) => {
   try {
     const { merchantName } = req.body;
 
-    if (typeof merchantName !== "string" || (merchantName.length === 0))
-      return res.status(401).json({ success: false, message: "Please provide a valid merchantName" });
+    if (typeof merchantName !== "string" || merchantName.length === 0)
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "Please provide a valid merchantName",
+        });
 
     const merchant = await Merchants.create({
       merchantName,
@@ -75,7 +81,7 @@ router.post("/create", authMiddle, async (req, res) => {
     });
 
     const userId = req.body.user._id;
-    const user = await User.findById(userId);
+    const user: any = await User.findById(userId);
     console.log(user.merchants);
     user.merchants.push(merchant._id);
     await user.save();
@@ -85,8 +91,10 @@ router.post("/create", authMiddle, async (req, res) => {
       merchant,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
-})
+});
 
 module.exports = router;

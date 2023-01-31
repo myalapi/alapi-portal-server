@@ -5,7 +5,15 @@ const CredentialSchema = new mongoose.Schema({
   value: String,
 });
 
-const PlatformSchema = new mongoose.Schema({
+export interface IPlatform {
+  platformKey: String;
+  platformName: String;
+  platformUrl: String;
+  icon: String;
+  type: String;
+  credentials: [];
+}
+const PlatformSchema = new mongoose.Schema<IPlatform>({
   platformKey: String,
   platformName: String,
   platformUrl: String,
@@ -14,5 +22,4 @@ const PlatformSchema = new mongoose.Schema({
   credentials: [CredentialSchema],
 });
 
-const Platforms = mongoose.model("Platforms", PlatformSchema, "platforms");
-export default Platforms;
+mongoose.model("Platforms", PlatformSchema, "platforms");
