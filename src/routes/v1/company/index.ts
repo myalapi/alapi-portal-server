@@ -82,7 +82,6 @@ router.post("/create", authMiddle, async (req, res) => {
 
     const userId = req.body.user._id;
     const user: any = await User.findById(userId);
-    console.log(user.merchants);
     user.merchants.push(merchant._id);
     await user.save();
 

@@ -27,7 +27,13 @@ router.get("/:companyId", async (req, res) => {
     const userId = merchant.userId;
     const user: any = await User.findById(userId);
     const userPlatforms: any = user.platforms;
-    const merchantPlatformArray = Object.keys(merchant.platforms);
+    let merchantPlatformArray: string | any[];
+    if (merchant.platforms == null || merchant.platforms.length === 0) {
+      merchantPlatformArray = [];
+    } else {
+      merchantPlatformArray = Object.keys(merchant.platforms);
+    }
+
     const platforms: LinkPlatform[] = [];
     for (var i = 0; i < userPlatforms.length; i++) {
       const platform: any = await Platform.findOne({
@@ -51,6 +57,7 @@ router.get("/:companyId", async (req, res) => {
     return res.status(200).json({
       success: true,
       platforms,
+      userId,
     });
   } catch (error: any) {
     console.log(error);
