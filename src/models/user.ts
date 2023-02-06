@@ -36,4 +36,4 @@ const UserSchema = new mongoose.Schema<IUser>({
   recoverToken: String,
 });
 
-mongoose.model("User", UserSchema, "users");
+mongoose.model("Users", UserSchema, "users");

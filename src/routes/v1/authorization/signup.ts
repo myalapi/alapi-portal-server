@@ -1,10 +1,9 @@
 import Router from "express";
-import { createNewUser, sendVerifEmail } from "../../../utils/userUtils";
+import { sendVerifEmail } from "../../../utils/userUtils";
 import { getIdPass } from "../../../utils/decodeUtils";
 
 const userRouter = Router();
-import mongoose from "mongoose";
-const User = mongoose.model("User");
+import { createUser } from "../../../dal/user";
 
 userRouter.get("/", function (_req, res) {
   res.send("No Get Request");
@@ -13,39 +12,19 @@ userRouter.get("/", function (_req, res) {
 userRouter.post("/", async (req, res) => {
   const { email, password } = getIdPass(req.headers);
   const { companyName, name } = req.body;
-
-  if (!companyName || !name) {
-    return res.json({ success: false, msg: "Company Name or Name Required" });
-  }
-
-  const newUser:any = new User({
-    ...createNewUser(email, password, companyName, name),
-  });
-
-  User.findOne({ email:email })
-    .then(async (user: any) => {
-      if (!user) {
-        console.log("User not found");
-        
-        await newUser.save();
-        await sendVerifEmail(newUser.id, newUser.email);
-        return res.json({ success: true, msg: "Account Created successfully" });
-      } else if (!!user && !user.emailConfirmed) {
-        console.log("User found but not confirmed");        
-        await user.delete();
-        await newUser.save();
-        await sendVerifEmail(newUser.id, newUser.email);
-        return res.json({ success: true, msg: "Account Created successfully" });
-      } else {
-        console.log("User confirmed");
-        return res.json({ success: false, msg: "Account already exists" });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.status(401).json({ msg: "Could not connect" });
+  try {
+    if (!companyName || !name) {
+      return res.json({ success: false, msg: "Company Name or Name Required" });
+    }
+    const user = await createUser(email, password, companyName, name);
+    await sendVerifEmail(user.id, user.email);
+    return res.json({ success: true, msg: "Account Created successfully" });
+  } catch (error: any) {
+    return res.json({
+      success: false,
+      msg: error.message,
     });
-    return;
+  }
 });
 
 module.exports = userRouter;

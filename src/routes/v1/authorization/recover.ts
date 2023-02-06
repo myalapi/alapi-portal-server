@@ -1,13 +1,12 @@
 import Router from "express";
-import mongoose from "mongoose";
 import {
   genPassword,
   genRecoverToken,
   sendResetPasswordEmail,
 } from "../../../utils/userUtils";
 import { BinaryLike } from "crypto";
+import { getUser, getUserByRecoverToken } from "../../../dal/user";
 
-const User = mongoose.model("User");
 const userRouter = Router();
 
 /*Api for sending Password
@@ -15,21 +14,20 @@ const userRouter = Router();
 
 userRouter.post("/", async (req, res) => {
   const email = req.body.email;
+  try {
+    const user: any = await getUser(email);
 
-  User.findOne({ email: email })
-    .then(async (user: any) => {
-      if (!user || (!!user && !user.emailConfirmed)) {
-        return res.send(200);
-      }
-      const recoverToken = genRecoverToken();
-      await user.updateOne({ recoverToken });
-      await sendResetPasswordEmail(recoverToken,email);
+    if (!user || (!!user && !user.emailConfirmed)) {
       return res.send(200);
-    })
-    .catch((error) => {
-      console.log(error);
-      return res.send(201);
-    });
+    }
+    const recoverToken = genRecoverToken();
+    await user.updateOne({ recoverToken });
+    await sendResetPasswordEmail(recoverToken, email);
+    return res.send(200);
+  } catch (error) {
+    console.log(error);
+    return res.send(200);
+  }
 });
 
 /*Api for Changing Password
@@ -47,23 +45,26 @@ userRouter.post("/:recoverToken", async (req, res) => {
     if (newPassword !== confirmPassword) {
       throw new Error("Passwords do not match");
     }
-    const user: any = await User.findOne({ recoverToken });
+    const user: any = await getUserByRecoverToken(recoverToken);
     if (!user) {
       throw new Error("Invalid Requested User");
     }
     const saltHash = genPassword(newPassword);
-    await user.updateOne({$set:{
-      salt: saltHash.salt,
-      hash: saltHash.hash,
-    }, $unset:{recoverToken: ""}});
+    await user.updateOne({
+      $set: {
+        salt: saltHash.salt,
+        hash: saltHash.hash,
+      },
+      $unset: { recoverToken: "" },
+    });
 
     return res.json({
       success: true,
       msg: "Password Changed successfully",
     });
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error);
-    return res.send({ success: false, msg:error.message });
+    return res.send({ success: false, msg: error.message });
   }
 });
 module.exports = userRouter;
