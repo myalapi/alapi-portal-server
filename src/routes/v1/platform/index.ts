@@ -1,9 +1,13 @@
 import Router from "express";
+// import { IPlatform } from "./../../../models/platform";
 const router = Router();
 import mongoose from "mongoose";
 import authMiddle from "../../../middlewares/authMiddle";
 
-const Platforms = mongoose.model("Platforms");
+const Platform = mongoose.model("Platforms");
+// interface PartialPlatform extends Partial<IPlatform> {
+//   isConnected?: Boolean;
+// }
 
 router.use("/credentials", require("./credentials"));
 
@@ -12,7 +16,7 @@ router.use("/credentials", require("./credentials"));
 router.get("/", authMiddle, async (req, res) => {
   const user = req.body.user;
 
-  const platforms: any[] = await Platforms.find({});
+  const platforms: any[] = await Platform.find({});
   const connectedPlatforms = user.platforms;
 
   for (var i = 0; i < connectedPlatforms.length; i++) {
@@ -29,6 +33,29 @@ router.get("/", authMiddle, async (req, res) => {
   res.send({ data: platforms });
 });
 
+///Api for getting the all platforms
+router.get("/allplatforms", authMiddle, async (_req, res) => {
+  try {
+    const platforms: any[] = await Platform.find({});
+    const platformData: any = {};
+    for (var i = 0; i < platforms.length; i++) {
+      const platform: any = platforms[i];
+      platformData[platform.platformKey] = {
+        platformKey: platform.platformKey,
+        platformName: platform.platformName,
+        icon: platform.icon,
+      };
+    }
+    return res.status(200).json({
+      success: true,
+      data: platformData
+    });
+  } catch (error: any) {
+    console.log(error);
+    return res.send({ success: false, message: error.message });
+  }
+});
+
 ///Api for checking if configured or not and send configuration form
 router.get("/:platformKey", authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
@@ -39,7 +66,7 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
       throw new Error(`Invalid platform Id provided`);
     }
     let platforms = user.platforms;
-    const platform: any = await Platforms.findOne({ platformKey });
+    const platform: any = await Platform.findOne({ platformKey });
 
     for (var i = 0; i < platforms.length; i++) {
       if (platforms[i].platformKey === platformKey && platforms[i].isConfigured === true) {
