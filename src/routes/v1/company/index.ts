@@ -80,4 +80,35 @@ router.post("/create", authMiddle, async (req, res) => {
   }
 });
 
+router.delete("/:companyId", authMiddle, async (req, res) => {
+  const companyId = req.params.companyId;
+  const user: any = req.body.user;// user platforms array se company id delete karni h
+  try {
+    if (companyId === undefined || companyId === null) {
+      throw new Error("CompanyId not found");
+    }
+    const company = await Merchants.findById(companyId);
+    if (company === null) {
+      throw new Error("Company not found");
+    }
+    await company.remove();
+
+    const merchantArray = user.merchants;
+    const index = merchantArray.indexOf(companyId);
+    merchantArray.splice(index, 1);
+    user.merchants=merchantArray;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Company deleted successfully"
+    })
+  } catch (error: any) {
+    console.log(error);
+    return res.sendStatus(error.message);
+  }
+
+});
+
+
 module.exports = router;
