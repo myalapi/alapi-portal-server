@@ -1,18 +1,14 @@
 import Router from "express";
-import mongoose from "mongoose";
 import authMiddle from "../../../middlewares/authMiddle";
-const User = mongoose.model("User");
 
 const router = Router();
 
 router.put("/", authMiddle, async (req, res) => {
   const user = req.body.user;
-  const updateInfo = req.body.updateInfo;
-  console.log(req.body);
-  
+  const updateInfo = req.body.updateInfo;  
   try {
     if(updateInfo===undefined || updateInfo === null) throw new Error("Info missing");
-    await User.updateOne({ email: user.email }, { $set: { ...updateInfo } });
+    await user.updateOne({ email: user.email }, { $set: { ...updateInfo } });
     return res.json({
       success: true,
       msg: "Info Updated Successfully",

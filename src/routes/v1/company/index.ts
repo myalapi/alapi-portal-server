@@ -1,21 +1,18 @@
 import Router from "express";
 import authMiddle from "../../../middlewares/authMiddle";
-import mongoose from "mongoose";
-
-const Merchants = mongoose.model("Merchants");
-const User = mongoose.model("User");
+import {
+  createMerchant,
+  getMercants,
+  searchMerchants,
+} from "../../../dal/merchant";
 
 const router = Router();
-
 
 //Get all the merchants from user
 router.get("/", authMiddle, async (req, res) => {
   const merchants = req.body.user.merchants;
   try {
-    const merchs = await Merchants.find(
-      { _id: { $in: merchants } },
-      "merchantId merchantName platforms createdOn"
-    );
+    const merchs = await getMercants(merchants);
     const finalMerchs = [];
     for (var i = 0; i < merchs.length; i++) {
       const m: any = merchs[i];
@@ -36,15 +33,9 @@ router.get("/", authMiddle, async (req, res) => {
 
 router.get("/search", authMiddle, async (req, res) => {
   const merchants = req.body.user.merchants;
-  const query = req.query.search === undefined ? "" : req.query.search;
+  const query: string = req.query.search === undefined ? "" : req.query.search as string;
   try {
-    const merchs = await Merchants.find(
-      {
-        merchantName: { $regex: query, $options: "i" },
-        _id: { $in: merchants },
-      },
-      "merchantId merchantName platforms createdOn"
-    );
+    const merchs = await searchMerchants(query, merchants);
     const finalMerchs = [];
     for (var i = 0; i < merchs.length; i++) {
       const m: any = merchs[i];
@@ -65,23 +56,16 @@ router.get("/search", authMiddle, async (req, res) => {
 router.post("/create", authMiddle, async (req, res) => {
   try {
     const { merchantName } = req.body;
+    const user = req.body.user;
 
     if (typeof merchantName !== "string" || merchantName.length === 0)
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Please provide a valid merchantName",
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Please provide a valid merchantName",
+      });
 
-    const merchant = await Merchants.create({
-      merchantName,
-      userId: req.body.user._id,
-      createdOn: Date.now(),
-    });
+    const merchant = await createMerchant(merchantName, req.body.user._id);
 
-    const userId = req.body.user._id;
-    const user: any = await User.findById(userId);
     user.merchants.push(merchant._id);
     await user.save();
 

@@ -1,7 +1,7 @@
 import { IPlatform } from "./../../../models/platform";
 import Router from "express";
 import mongoose from "mongoose";
-const User = mongoose.model("User");
+const User = mongoose.model("Users");
 const Merchant = mongoose.model("Merchants");
 const Platform = mongoose.model("Platforms");
 

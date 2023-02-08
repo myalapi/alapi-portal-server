@@ -1,13 +1,10 @@
 import Router from "express";
 // import { IPlatform } from "./../../../models/platform";
 const router = Router();
-import mongoose from "mongoose";
 import authMiddle from "../../../middlewares/authMiddle";
 
-const Platform = mongoose.model("Platforms");
-// interface PartialPlatform extends Partial<IPlatform> {
-//   isConnected?: Boolean;
-// }
+import { getPlatformByKey, getPlatforms } from "../../../dal/platform";
+
 
 router.use("/credentials", require("./credentials"));
 
@@ -16,7 +13,9 @@ router.use("/credentials", require("./credentials"));
 router.get("/", authMiddle, async (req, res) => {
   const user = req.body.user;
 
-  const platforms: any[] = await Platform.find({});
+
+  const platforms: any[] = await getPlatforms();
+
   const connectedPlatforms = user.platforms;
 
   for (var i = 0; i < connectedPlatforms.length; i++) {
@@ -66,7 +65,9 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
       throw new Error(`Invalid platform Id provided`);
     }
     let platforms = user.platforms;
-    const platform: any = await Platform.findOne({ platformKey });
+
+    const platform: any = await getPlatformByKey(platformKey);
+
 
     for (var i = 0; i < platforms.length; i++) {
       if (platforms[i].platformKey === platformKey && platforms[i].isConfigured === true) {

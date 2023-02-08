@@ -1,7 +1,6 @@
 import Router from "express";
 import { verifyJWT } from "../../../utils/jwtUtils";
-import mongoose from "mongoose";
-const User = mongoose.model("User");
+import { updateUserConfirm } from "../../../dal/user";
 
 const router = Router();
 
@@ -10,14 +9,9 @@ router.get("/:token", async (req, res) => {
 
   try {
     const verify: any = verifyJWT(token);
-    
-   const result =  await User.updateOne(
-      { _id: verify.sub },
-      { $set: { emailConfirmed: true } }
-    );    
-    console.log(result);
-    
-    
+
+    await updateUserConfirm(verify.sub);
+
     return res.redirect(`${process.env.WEB_URL}`);
   } catch (error) {
     console.log(error);
