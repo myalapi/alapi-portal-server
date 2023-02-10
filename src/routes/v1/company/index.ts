@@ -26,7 +26,6 @@ router.get("/", authMiddle, async (req, res) => {
     res.send({ companies: finalMerchs });
   } catch (error) {
     console.log(error);
-
     res.send({ success: false, error: error });
   }
 });
