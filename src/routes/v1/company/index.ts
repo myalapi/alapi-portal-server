@@ -3,6 +3,7 @@ import authMiddle from "../../../middlewares/authMiddle";
 import {
   createMerchant,
   getMercants,
+  getMerchant,
   searchMerchants,
 } from "../../../dal/merchant";
 
@@ -86,7 +87,7 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     if (companyId === undefined || companyId === null) {
       throw new Error("CompanyId not found");
     }
-    const company = await Merchants.findById(companyId);
+    const company = await getMerchant(companyId);
     if (company === null) {
       throw new Error("Company not found");
     }
