@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import { verifyJWT } from "../utils/jwtUtils";
-const User = mongoose.model("User");
+const User = mongoose.model("Users");
 
 export default async function authMiddle(
   req: Request,

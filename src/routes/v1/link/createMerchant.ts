@@ -2,7 +2,7 @@ import { IUser } from "./../../../models/user";
 import Router from "express";
 import mongoose from "mongoose";
 const Merchant = mongoose.model("Merchants");
-const User = mongoose.model("User");
+const User = mongoose.model("Users");
 
 const router = Router();
 

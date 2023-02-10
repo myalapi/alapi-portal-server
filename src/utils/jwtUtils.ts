@@ -1,3 +1,4 @@
+import { CookieOptions } from 'express';
 import jwt, { VerifyOptions } from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
@@ -17,7 +18,6 @@ export function issueJWT(userId: String) {
   };
 
   return jwt.sign(payload, PRIV_KEY, { algorithm: "RS256" });
-
 }
 
 export function verifyJWT(token: string) {
@@ -25,3 +25,10 @@ export function verifyJWT(token: string) {
     algorithm: "RS256",
   } as VerifyOptions);
 }
+export const jwtOptions: CookieOptions = {
+  sameSite: "none",
+  secure: true,
+  maxAge: 1000000 * 60 * 15, // would expire after 15 minutes
+  httpOnly: true, // The cookie only accessible by the web server
+  // Indicates if the cookie should be signed
+};

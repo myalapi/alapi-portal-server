@@ -1,10 +1,7 @@
 import { BinaryLike } from "crypto";
-import mongoose from "mongoose";
-
 import Router from "express";
 import authMiddle from "../../../middlewares/authMiddle";
 import { validPassword, genPassword } from "../../../utils/userUtils";
-const User = mongoose.model("User");
 
 const router = Router();
 
@@ -25,10 +22,9 @@ router.post("/", authMiddle, async (req, res) => {
       throw new Error("Invalid Password");
     }
     const saltHash = genPassword(newPassword);
-    await User.updateOne(
-      { email: user.email },
-      { $set: { salt: saltHash.salt, hash: saltHash.hash } }
-    );
+    user.salt = saltHash.salt;
+    user.hash = saltHash.hash;
+    user.save();
 
     return res.json({
       success: true,

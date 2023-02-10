@@ -1,10 +1,8 @@
 import Router from "express";
-import mongoose from "mongoose";
 import { getIdPass } from "../../../utils/decodeUtils";
 import { validPassword } from "../../../utils/userUtils";
-import { issueJWT } from "../../../utils/jwtUtils";
-
-const User = mongoose.model("User");
+import { issueJWT, jwtOptions } from "../../../utils/jwtUtils";
+import { getUserFromEmail } from "../../../dal/user";
 
 const userRouter = Router();
 
@@ -14,42 +12,28 @@ userRouter.get("/", (_req: any, res) => {
 
 userRouter.post("/", async (req, res) => {
   const { email, password } = getIdPass(req.headers);
-  User.findOne({ email: email })
-    .then(async (user: any) => {
-      if (!user.emailConfirmed) {
-        throw new Error("Email is not confirmed");
-      }
-      const isValid = validPassword(password, user.hash, user.salt);
+  try {
+    const user: any = await getUserFromEmail(email);
+    if (!user) throw new Error("User not found");
+    if (!user.emailConfirmed) throw new Error("Email is not confirmed");
+    const isValid = validPassword(password, user.hash, user.salt);
+    if (!isValid) throw new Error("Invalid password");
+    const token = issueJWT(user._id);
 
-      if (isValid) {
-        const token = issueJWT(user._id);
-        let options: any = {
-          sameSite: "None",
-          secure: true,
-          maxAge: 1000000 * 60 * 15, // would expire after 15 minutes
-          httpOnly: true, // The cookie only accessible by the web server
-          // Indicates if the cookie should be signed
-        };
-        res
-          .cookie("jwt", token, options)
-          .status(200)
-          .json({
-            success: true,
-            user: {
-              name: user.name,
-              email: user.email,
-              companyName: user.companyName,
-              userId: user._id,
-            },
-          });
-      } else {
-        throw new Error("Invalid Password");
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.json({ success: false, msg: err.message });
+    const userData = {
+      name: user.name,
+      email: user.email,
+      companyName: user.companyName,
+      userId: user._id,
+    };
+    return res.cookie("jwt", token, jwtOptions).status(200).json({
+      success: true,
+      user: userData,
     });
+  } catch (error: any) {
+    console.log(error);
+    return res.json({ success: false, msg: error.message });
+  }
 });
 
 module.exports = userRouter;
