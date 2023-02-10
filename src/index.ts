@@ -17,10 +17,16 @@ const app = express();
 
 app.use(cookieParser());
 
+
+// For Mail Templates
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+app.set('view engine', 'ejs');
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(cors({origin:'http://localhost:3000', credentials:true}));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 app.use(require('./routes'));
 

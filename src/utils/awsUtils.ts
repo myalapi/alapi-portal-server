@@ -2,11 +2,13 @@ import {
   SecretsManagerClient,
   GetSecretValueCommand,
   CreateSecretCommand,
+  UpdateSecretCommand,
+  DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
 
 export async function createSecret(secretName: string, creds: Object) {
   const client = new SecretsManagerClient({
-    region: "us-east-1",
+    region: "ap-south-1",
     credentials: {
       accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
       secretAccessKey: "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",
@@ -21,8 +23,20 @@ export async function createSecret(secretName: string, creds: Object) {
         SecretString: JSON.stringify(creds),
       })
     );
-  } catch (error) {
-    throw error;
+  } catch (error:any) {
+    console.log(error.name);
+    
+    if (error.name === "InvalidRequestException") {
+      deleteSecret(secretName);
+      response = await client.send(
+        new CreateSecretCommand({
+          Name: secretName,
+          SecretString: JSON.stringify(creds),
+        })
+      );
+    } else {
+      throw error;
+    }
   }
   client.destroy();
   return response.Name;
@@ -30,7 +44,7 @@ export async function createSecret(secretName: string, creds: Object) {
 
 export async function getSecret(secretName: string) {
   const client = new SecretsManagerClient({
-    region: "us-east-1",
+    region: "ap-south-1",
     credentials: {
       accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
       secretAccessKey: "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",
@@ -52,4 +66,52 @@ export async function getSecret(secretName: string) {
   client.destroy();
   const secret = response.SecretString;
   return JSON.parse(secret as string);
+}
+
+export async function updateSecret(secretName: string, creds: Object) {
+  const client = new SecretsManagerClient({
+    region: "ap-south-1",
+    credentials: {
+      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
+      secretAccessKey: "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",
+    },
+  });
+  let response;
+
+  try {
+    response = await client.send(
+      new UpdateSecretCommand({
+        SecretId: secretName,
+        SecretString: JSON.stringify(creds),
+      })
+    );
+  } catch (error) {
+    throw error;
+  }
+  client.destroy();
+  return response.Name;
+}
+
+export async function deleteSecret(secretName: string) {
+  const client = new SecretsManagerClient({
+    region: "ap-south-1",
+    credentials: {
+      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
+      secretAccessKey: "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",
+    },
+  });
+  let response;
+
+  try {
+    response = await client.send(
+      new DeleteSecretCommand({
+        SecretId: secretName,
+        ForceDeleteWithoutRecovery: true,
+      })
+    );
+  } catch (error) {
+    throw error;
+  }
+  client.destroy();
+  return response.Name;
 }
