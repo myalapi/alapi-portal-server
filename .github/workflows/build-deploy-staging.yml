@@ -34,7 +34,7 @@ jobs:
       with:
         host: 3.111.41.249
         username: "ubuntu"
-        key_path: ${{ steps.upload-ssh-key.outputs.file-path }}
+        key_path: ./.github/staging.pem
         source: .
         target: /DATA01/builds/portal-server/
     #    command: 'pm2 reload portal-server'
