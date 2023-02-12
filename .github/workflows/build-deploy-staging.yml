@@ -38,8 +38,9 @@ jobs:
         host: 3.111.41.249
         username: "ubuntu"
         key_path: ./.github/staging.pem
+        port: 22
         script: |
           mv /DATA01/builds/portal-server /DATA01/builds/portal-server-old
-          mv  /DATA01/builds/portal-server-new /DATA01/builds/portal-server
+          mv /DATA01/builds/portal-server-new /DATA01/builds/portal-server
 
 
