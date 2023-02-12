@@ -35,7 +35,7 @@ jobs:
     - name: Restart Service
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: 3.111.41.249
+        host: "3.111.41.249"
         username: "ubuntu"
         key_path: ./.github/staging.pem
         port: 22
