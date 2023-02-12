@@ -36,5 +36,5 @@ jobs:
         username: "ubuntu"
         private-key: ${{ steps.upload-ssh-key.outputs.file-path }}
         source: .
-        target: /DATA01/portal-server/
+        target: /DATA01/builds/portal-server/
     #    command: 'pm2 reload portal-server'
