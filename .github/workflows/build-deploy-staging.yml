@@ -36,5 +36,9 @@ jobs:
         username: "ubuntu"
         key_path: ./.github/staging.pem
         source: .
-        target: /DATA01/builds/portal-server/
-    #    command: 'pm2 reload portal-server'
+        target: /DATA01/builds/portal-server-new/
+        command: |
+          mv /DATA01/builds/portal-server /DATA01/builds/portal-server-old
+          mv /DATA01/builds/portal-server-new /DATA01/builds/portal-server
+          
+
