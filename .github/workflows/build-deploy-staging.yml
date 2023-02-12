@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main
+      - PA-setup-pipeline
 
 env:
   AWS_REGION: ap-south-1
@@ -34,7 +34,7 @@ jobs:
       with:
         host: 3.111.41.249
         username: "ubuntu"
-        private-key: ${{ steps.upload-ssh-key.outputs.file-path }}
+        key_path: ${{ steps.upload-ssh-key.outputs.file-path }}
         source: .
         target: /DATA01/builds/portal-server/
     #    command: 'pm2 reload portal-server'
