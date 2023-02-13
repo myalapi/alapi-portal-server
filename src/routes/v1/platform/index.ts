@@ -35,7 +35,7 @@ router.get("/", authMiddle, async (req, res) => {
 ///Api for getting the all platforms
 router.get("/allplatforms", authMiddle, async (_req, res) => {
   try {
-    const platforms: any[] = await Platform.find({});
+    const platforms: any[] = await getPlatforms();
     const platformData: any = {};
     for (var i = 0; i < platforms.length; i++) {
       const platform: any = platforms[i];

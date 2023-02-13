@@ -3,6 +3,7 @@ import authMiddle from "../../../middlewares/authMiddle";
 import {
   createMerchant,
   getMercants,
+  getMerchant,
   searchMerchants,
 } from "../../../dal/merchant";
 
@@ -20,6 +21,7 @@ router.get("/", authMiddle, async (req, res) => {
         id: m.mechantId,
         name: m.merchantName,
         createdOn: m.createdOn,
+        link: m.link,
         platforms: m.platforms ? Object.keys(m.platforms) : null,
       });
     }
@@ -42,6 +44,7 @@ router.get("/search", authMiddle, async (req, res) => {
         id: m.mechantId,
         name: m.merchantName,
         createdOn: m.createdOn,
+        link: m.link,
         platforms: m.platforms ? Object.keys(m.platforms) : null,
       });
     }
@@ -62,12 +65,15 @@ router.post("/create", authMiddle, async (req, res) => {
         success: false,
         message: "Please provide a valid merchantName",
       });
-
     const merchant = await createMerchant(merchantName, req.body.user._id);
+
+    const link = process.env.LINK_URL + "/" + merchant._id;
+
+    await merchant.updateOne({ link: link });
 
     user.merchants.push(merchant._id);
     await user.save();
-
+    console.log(merchant);
     return res.status(201).json({
       success: true,
       merchant,
@@ -86,7 +92,7 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     if (companyId === undefined || companyId === null) {
       throw new Error("CompanyId not found");
     }
-    const company = await Merchants.findById(companyId);
+    const company = await getMerchant(companyId);
     if (company === null) {
       throw new Error("Company not found");
     }
@@ -95,7 +101,7 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     const merchantArray = user.merchants;
     const index = merchantArray.indexOf(companyId);
     merchantArray.splice(index, 1);
-    user.merchants=merchantArray;
+    user.merchants = merchantArray;
     await user.save();
 
     return res.status(200).json({

@@ -31,6 +31,10 @@ router.post("/", async (req, res) => {
       userId: req.body.userId,
       createdOn: Date.now(),
     });
+
+    const link = process.env.LINK_URL + "/" + merchant._id;
+    await merchant.updateOne({ link: link });
+
     const user: IUser | any = await User.findById(userId);
     user.merchants.push(merchant._id);
     await user.save();
