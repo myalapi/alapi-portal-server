@@ -12,10 +12,11 @@ require("./models/platform");
 const PORT = process.env.SERVER_PORT || 8000;
 const WEB_URL = process.env.WEB_URL || "http://localhost:3000";
 
-
 const app = App();
 
-app.use(cors({ origin: WEB_URL, credentials: true }));
+var whitelist = [WEB_URL, "http://localhost:3001"];
+
+app.use(cors({ origin: whitelist, credentials: true }));
 
 app.listen(PORT, function () {
   console.log(`listening on port ${PORT}: http://localhost:${PORT}`);
