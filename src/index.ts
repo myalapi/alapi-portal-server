@@ -11,7 +11,7 @@ require('./models/merchant');
 require('./models/platform');
 
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.SERVER_PORT || 8000;
 
 const app = express();
 

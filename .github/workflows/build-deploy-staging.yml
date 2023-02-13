@@ -16,25 +16,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: "AKIA3BJ7GXY2YEWEGWHC"
-        aws-secret-access-key: "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"
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Upload private key
-      uses: actions/upload-artifact@v2
-      with:
-        name: ssh-private-key
-        path: ./.github/staging.pem
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: "AKIA3BJ7GXY2YEWEGWHC"
+    #     aws-secret-access-key: "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"
+    #     aws-region: ${{ env.AWS_REGION }}
 
     - name: Copy code to EC2 instance
       uses: appleboy/scp-action@master
       with:
         host: 3.111.41.249
         username: "ubuntu"
-        private-key: ${{ steps.upload-ssh-key.outputs.file-path }}
+        key_path: ./.github/staging.pem
         source: .
-        target: /DATA01/builds/portal-server/
-    #    command: 'pm2 reload portal-server'
+        target: /DATA01/builds/portal-server-new/
+
+    - name: Restart Service
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: "3.111.41.249"
+        username: "ubuntu"
+        key_path: ./.github/staging.pem
+        port: 22
+        script: |
+          mv /DATA01/builds/portal-server /DATA01/builds/portal-server-old
+          mv /DATA01/builds/portal-server-new /DATA01/builds/portal-server
+
+
