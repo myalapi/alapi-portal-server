@@ -82,7 +82,7 @@ router.post("/create", authMiddle, async (req, res) => {
 
 router.delete("/:companyId", authMiddle, async (req, res) => {
   const companyId = req.params.companyId;
-  const user: any = req.body.user;// user platforms array se company id delete karni h
+  const user: any = req.body.user;
   try {
     if (companyId === undefined || companyId === null) {
       throw new Error("CompanyId not found");
