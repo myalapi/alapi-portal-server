@@ -44,5 +44,6 @@ jobs:
           mv /DATA01/builds/portal-server-new /DATA01/builds/portal-server
           cd /DATA01/builds/portal-server
           npm i
+          npm run build
 
 
