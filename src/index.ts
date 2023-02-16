@@ -10,7 +10,7 @@ require("./models/merchant");
 require("./models/platform");
 
 const PORT = process.env.SERVER_PORT || 8000;
-const WEB_URL = process.env.WEB_URL || "http://localhost:3000";
+// const WEB_URL = process.env.WEB_URL || "http://localhost:3000";
 
 const app = App();
 
