@@ -16,7 +16,6 @@ export default function App(): core.Express {
     app.use(express.json());
   
   
-    app.use(require("./routes"));
     return app;
   }
 
