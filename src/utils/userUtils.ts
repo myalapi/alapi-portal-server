@@ -66,15 +66,18 @@ export function genRecoverToken() {
 
 export async function sendVerifEmail(userId: any, email: String) {
   const emailjwt = issueJWT(userId);
-  const url = `${process.env.URL}/authorize/verify/${emailjwt}`;
+  const url = `${process.env.SERVER_URL}/authorize/verify/${emailjwt}`;
+  const data = await ejs.renderFile(
+    path.join(__dirname, "../", "views/verifyEmail/index.ejs"),
+    { verifyLink: url }
+  );
   const mailOption = mailOptions(
     '"Alapi" support@alapi.co',
     email,
-    "Hello world?",
-    "url",
+    "Account Verification",
+    "",
     { "x-myheader": "test header" },
-    `<div>Hello world?
-    <a href=${url}>Button</a></div>`
+    data
   );
   await mail(mailOption);
 }
