@@ -5,15 +5,15 @@ import {
   UpdateSecretCommand,
   DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
-
+const client = new SecretsManagerClient({
+  region: "ap-south-1",
+  credentials: {
+    accessKeyId: "AKIA3BJ7GXY2TTULW2SB",
+    secretAccessKey: "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",
+  },
+});
 export async function createSecret(secretName: string, creds: Object) {
-  const client = new SecretsManagerClient({
-    region: "ap-south-1",
-    credentials: {
-      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
-      secretAccessKey: "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",
-    },
-  });
+
   let response;
 
   try {
@@ -43,13 +43,6 @@ export async function createSecret(secretName: string, creds: Object) {
 }
 
 export async function getSecret(secretName: string) {
-  const client = new SecretsManagerClient({
-    region: "ap-south-1",
-    credentials: {
-      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
-      secretAccessKey: "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",
-    },
-  });
   let response;
   try {
     response = await client.send(
@@ -69,13 +62,6 @@ export async function getSecret(secretName: string) {
 }
 
 export async function updateSecret(secretName: string, creds: Object) {
-  const client = new SecretsManagerClient({
-    region: "ap-south-1",
-    credentials: {
-      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
-      secretAccessKey: "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",
-    },
-  });
   let response;
 
   try {
@@ -93,13 +79,6 @@ export async function updateSecret(secretName: string, creds: Object) {
 }
 
 export async function deleteSecret(secretName: string) {
-  const client = new SecretsManagerClient({
-    region: "ap-south-1",
-    credentials: {
-      accessKeyId: "AKIA3BJ7GXY2TS7PRQKZ",
-      secretAccessKey: "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",
-    },
-  });
   let response;
 
   try {
