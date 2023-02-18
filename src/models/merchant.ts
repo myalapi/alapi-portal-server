@@ -13,7 +13,8 @@ const MerchantSchema = new mongoose.Schema({
     merchantName: String,
     userId:String,
     createdOn: Date,
-    platforms: Object
+    platforms: Object,
+    link:String,
 });
 
 mongoose.model('Merchants', MerchantSchema, 'merchants');

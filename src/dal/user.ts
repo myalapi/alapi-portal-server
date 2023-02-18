@@ -46,5 +46,5 @@ export async function createUser(
 }
 
 export async function updateUserConfirm(id: string) {
-  return await Users.updateOne({ _id: id }, { $set: { isVerified: true } });
+  return await Users.updateOne({ _id: id }, { $set: { emailConfirmed: true } });
 }

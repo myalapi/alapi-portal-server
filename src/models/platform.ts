@@ -11,10 +11,10 @@ export interface IPlatform {
   platformUrl: String;
   icon: String;
   type: String;
-  credentials: [];
+  credentials: Array<any>;
 }
 const PlatformSchema = new mongoose.Schema<IPlatform>({
-  platformKey: String,
+  platformKey: { type: String, unique: true },
   platformName: String,
   platformUrl: String,
   icon: String,
@@ -22,4 +22,6 @@ const PlatformSchema = new mongoose.Schema<IPlatform>({
   credentials: [CredentialSchema],
 });
 
-mongoose.model("Platforms", PlatformSchema, "platforms");
+const Platform = mongoose.model("Platforms", PlatformSchema, "platforms");
+
+export default Platform;
