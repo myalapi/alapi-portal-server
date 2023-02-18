@@ -24,7 +24,7 @@ export async function createMerchant(merchantName: string, userId: string) {
     userId: userId,
     createdOn: Date.now(),
   });
-  merchant.link = process.env.LINK_URL + "invite/" + merchant.id;
+  merchant.link = process.env.LINK_URL + "/invite/" + merchant.id;
   await merchant.save();
   return merchant;
 }

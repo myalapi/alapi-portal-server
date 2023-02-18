@@ -5,7 +5,7 @@ import {
   sendResetPasswordEmail,
 } from "../../../utils/userUtils";
 import { BinaryLike } from "crypto";
-import { getUser, getUserByRecoverToken } from "../../../dal/user";
+import {  getUserByRecoverToken, getUserFromEmail } from "../../../dal/user";
 
 const userRouter = Router();
 
@@ -15,18 +15,19 @@ const userRouter = Router();
 userRouter.post("/", async (req, res) => {
   const email = req.body.email;
   try {
-    const user: any = await getUser(email);
+    const user: any = await getUserFromEmail(email);
 
     if (!user || (!!user && !user.emailConfirmed)) {
-      return res.send(200);
+      throw new Error("User not found or not confirmed");
+      
     }
     const recoverToken = genRecoverToken();
     await user.updateOne({ recoverToken });
     await sendResetPasswordEmail(recoverToken, email);
-    return res.send(200);
+    return res.sendStatus(200);
   } catch (error) {
     console.log(error);
-    return res.send(200);
+    return res.sendStatus(200);
   }
 });
 
