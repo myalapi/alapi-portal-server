@@ -1,9 +1,12 @@
 import { IPlatform } from "./../../../models/platform";
 import Router from "express";
 import mongoose from "mongoose";
+import logger from "../../../logger";
 const User = mongoose.model("Users");
 const Merchant = mongoose.model("Merchants");
 const Platform = mongoose.model("Platforms");
+import IP from 'ip';
+
 
 const router = Router();
 
@@ -12,9 +15,8 @@ interface LinkPlatform extends Partial<IPlatform> {
 }
 
 router.get("/:companyId", async (req, res) => {
+  const merchantId = req.params.companyId;
   try {
-    const merchantId = req.params.companyId;
-
     if (merchantId === null || merchantId === undefined) {
       return res
         .status(401)
@@ -54,13 +56,20 @@ router.get("/:companyId", async (req, res) => {
       }
       platforms.push(linkPlatform);
     }
+    logger.log({
+      level: "info",
+      message: `Link portal: get all platforms API, ip: ${IP.address()} merchantId: ${merchantId} userId: ${user.id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.status(200).json({
       success: true,
       platforms,
       userId,
     });
   } catch (error: any) {
-    console.log(error);
+    logger.log({
+      level: "error",
+      message: `Link portal: get all platforms API, ip: ${IP.address()} error: ${error.message} merchantId:${merchantId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send({ success: false, message: error.message });
   }
 });

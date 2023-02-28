@@ -1,6 +1,9 @@
 import Router from "express";
 import { verifyJWT } from "../../../utils/jwtUtils";
 import { updateUserConfirm } from "../../../dal/user";
+import logger from "../../../logger";
+import IP from 'ip';
+
 
 const router = Router();
 
@@ -9,12 +12,17 @@ router.get("/:token", async (req, res) => {
 
   try {
     const verify: any = verifyJWT(token);
-
     await updateUserConfirm(verify.sub);
-
+    logger.log({
+      level: "info",
+      message: `Verify Token API, ip: ${IP.address()} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.redirect(`${process.env.WEB_URL}`);
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    logger.log({
+      level: "error",
+      message: `Verify Token API, ip: ${IP.address()} error: ${error.message} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send("Url is invalid, PLease Try Again");
   }
 });

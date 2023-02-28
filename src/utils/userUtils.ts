@@ -87,7 +87,6 @@ export async function sendResetPasswordEmail(
   email: String
 ) {
   const url = `${process.env.WEB_URL}/recover/${recoverToken}`;
-  console.log(url);
   const data = await ejs.renderFile(
     path.join(__dirname, "../", "views/resetEmail/index.ejs"),
     { resetLink: url }

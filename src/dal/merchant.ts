@@ -8,20 +8,14 @@ export async function getMerchant(id: string) {
 }
 
 export async function getMercants(ids: [number]) {
-  return await Merchants.find(
-    { _id: { $in: ids } },
-    "merchantId merchantName platforms createdOn"
-  );
+  return await Merchants.find({ _id: { $in: ids } });
 }
 
 export async function searchMerchants(search: string, ids: [string]) {
-  return await Merchants.find(
-    {
-      merchantName: { $regex: search, $options: "i" },
-      _id: { $in: ids },
-    },
-    "merchantId merchantName platforms createdOn"
-  );
+  return await Merchants.find({
+    merchantName: { $regex: search, $options: "i" },
+    _id: { $in: ids },
+  });
 }
 
 export async function createMerchant(merchantName: string, userId: string) {
@@ -30,7 +24,7 @@ export async function createMerchant(merchantName: string, userId: string) {
     userId: userId,
     createdOn: Date.now(),
   });
-  merchant.link = process.env.LINK_URL + "invite/" + merchant.id;
+  merchant.link = process.env.LINK_URL + "/invite/" + merchant.id;
   await merchant.save();
   return merchant;
 }

@@ -1,4 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose';
+import logger from '../logger';
 
 require('dotenv').config();
 
@@ -14,7 +15,10 @@ if (process.env.NODE_ENV === 'production') {
     } as ConnectOptions);
 
     mongoose.connection.on('connected', () => {
-        console.log('Database connected');
+        logger.log({
+            level: "info",
+            message: `Database connected`
+        });
     });
 } else {
     mongoose.connect(devConnection, {
@@ -23,7 +27,10 @@ if (process.env.NODE_ENV === 'production') {
     } as ConnectOptions);
 
     mongoose.connection.on('connected', () => {
-        console.log('Database connected');
+        logger.log({
+            level: "info",
+            message: `Database connected`
+        });
     });
 }
 

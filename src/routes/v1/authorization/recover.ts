@@ -5,7 +5,10 @@ import {
   sendResetPasswordEmail,
 } from "../../../utils/userUtils";
 import { BinaryLike } from "crypto";
-import { getUser, getUserByRecoverToken } from "../../../dal/user";
+import { getUserByRecoverToken, getUserFromEmail } from "../../../dal/user";
+import logger from "../../../logger";
+import IP from 'ip';
+
 
 const userRouter = Router();
 
@@ -15,18 +18,27 @@ const userRouter = Router();
 userRouter.post("/", async (req, res) => {
   const email = req.body.email;
   try {
-    const user: any = await getUser(email);
+    const user: any = await getUserFromEmail(email);
 
     if (!user || (!!user && !user.emailConfirmed)) {
-      return res.send(200);
+      throw new Error("User not found or not confirmed");
+
     }
     const recoverToken = genRecoverToken();
     await user.updateOne({ recoverToken });
     await sendResetPasswordEmail(recoverToken, email);
-    return res.send(200);
-  } catch (error) {
+    logger.log({
+      level: "info",
+      message: `Password-Recovery API, ip: ${IP.address()} userId: ${user.id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
+    return res.sendStatus(200);
+  } catch (error:any) {
+    logger.log({
+      level: "error",
+      message: `Password-Recovery API, ip: ${IP.address()} error: ${error.message} email: ${email} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     console.log(error);
-    return res.send(200);
+    return res.sendStatus(200);
   }
 });
 
@@ -57,13 +69,19 @@ userRouter.post("/:recoverToken", async (req, res) => {
       },
       $unset: { recoverToken: "" },
     });
-
+    logger.log({
+      level: "info",
+      message: `Change password using recovery Token API, ip: ${IP.address()} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.json({
       success: true,
       msg: "Password Changed successfully",
     });
   } catch (error: any) {
-    console.log(error);
+    logger.log({
+      level: "error",
+      message: `Change password using recovery Token API,ip: ${IP.address()} error: ${error.message} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send({ success: false, msg: error.message });
   }
 });

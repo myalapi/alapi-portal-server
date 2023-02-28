@@ -3,10 +3,17 @@ import { getIdPass } from "../../../utils/decodeUtils";
 import { validPassword } from "../../../utils/userUtils";
 import { issueJWT, jwtOptions } from "../../../utils/jwtUtils";
 import { getUserFromEmail } from "../../../dal/user";
+import logger from "../../../logger";
+import IP from 'ip';
+
 
 const userRouter = Router();
 
-userRouter.get("/", (_req: any, res) => {
+userRouter.get("/", (req: any, res) => {
+  logger.log({
+    level: "warn",
+    message: `Invalid GET request, ip: ${IP.address()} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+  });
   res.send("No GET Login Request");
 });
 
@@ -26,12 +33,19 @@ userRouter.post("/", async (req, res) => {
       companyName: user.companyName,
       userId: user._id,
     };
+    logger.log({
+      level: "info",
+      message: `Login API, ip: ${IP.address()} userId: ${user._id}, URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.cookie("jwt", token, jwtOptions).status(200).json({
       success: true,
       user: userData,
     });
   } catch (error: any) {
-    console.log(error);
+    logger.log({
+      level: "error",
+      message: `Login API, ip: ${IP.address()} error: ${error.message}, email: ${email} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.json({ success: false, msg: error.message });
   }
 });
