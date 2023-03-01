@@ -40,7 +40,6 @@ router.get("/", authMiddle, async (req, res) => {
 ///Api for getting the all platforms: Merchant
 router.get("/allplatforms", authMiddle, async (req, res) => {
   const userId = req.body.user._id;
-  const merchantId = req.body.merchant._id;
   try {
     const platforms: any[] = await getPlatforms();
     const platformData: any = {};
@@ -54,7 +53,7 @@ router.get("/allplatforms", authMiddle, async (req, res) => {
     }
     logger.log({
       level: "info",
-      message: `Get all Merchant's Platforms API, ip: ${IP.address()} userId: ${userId} merchantId: ${merchantId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Get all Merchant's Platforms API, ip: ${IP.address()} userId: ${userId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
     });
     return res.status(200).json({
       success: true,
@@ -63,7 +62,7 @@ router.get("/allplatforms", authMiddle, async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Get all Merchant's Platforms API, ip: ${IP.address()} error: ${error.message} userId: ${userId} merchantId: ${merchantId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Get all Merchant's Platforms API, ip: ${IP.address()} error: ${error.message} userId: ${userId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
     });
     return res.send({ success: false, message: error.message });
   }

@@ -1,8 +1,8 @@
-const { createLogger, format, transports } = require('winston');
+import { createLogger, format, transports } from "winston";
 const { combine, timestamp, printf } = format;
 
-const myFormat = printf(({ level, message, timestamp }: { level: any, message: any, timestamp: any }) => {
-    return `${timestamp} ${level}: ${message}`;
+const myFormat = printf((info) => {
+    return `${info.timestamp} ${info.level}: ${info.message}`;
 });
 
 export default function prodLogger() {
