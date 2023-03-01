@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const Platforms = mongoose.model("Platforms");
 
 export async function getPlatform(id: string) {
-  return await Platforms.findOne({ id: id }).then((platform) => {
+  return await Platforms.findOne({ _id: id }).then((platform) => {
     return platform;
   });
 }

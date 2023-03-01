@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 // const MerchPlatSchema = new mongoose.Schema({
 //     id:String,
@@ -9,12 +9,13 @@ import mongoose from 'mongoose';
 // });
 
 const MerchantSchema = new mongoose.Schema({
-    merchantId: Number,
-    merchantName: String,
-    userId:String,
-    createdOn: Date,
-    platforms: Object,
-    link:String,
+  merchantId: Number,
+  merchantName: String,
+  userId: String,
+  createdOn: Date,
+  platforms: Object,
+  link: String,
+  lastSyncDate: Date,
 });
 
-mongoose.model('Merchants', MerchantSchema, 'merchants');
+mongoose.model("Merchants", MerchantSchema, "merchants");

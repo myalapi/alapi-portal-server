@@ -3,7 +3,7 @@ import { createNewUser } from "../utils/userUtils";
 const Users = mongoose.model("Users");
 
 export async function getUser(id: string) {
-  return await Users.findOne({ id: id }).then((user) => {
+  return await Users.findOne({ _id: id }).then((user) => {
     return user;
   });
 }
@@ -46,5 +46,5 @@ export async function createUser(
 }
 
 export async function updateUserConfirm(id: string) {
-  return await Users.updateOne({ _id: id }, { $set: { emailConfirmed: true } });
+  return await Users.updateOne({ __id: id }, { $set: { emailConfirmed: true } });
 }
