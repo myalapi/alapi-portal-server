@@ -10,7 +10,7 @@ export default function prodLogger() {
         level: 'debug',
         format: combine(timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), myFormat),
         transports: [
-            new transports.File({ filename: 'serverLogs.log' })
+            new transports.Console(),
         ]
     });
 }
