@@ -48,9 +48,12 @@ export default async function initializePlatforms() {
       },
     ]);
     console.log("Platforms Created Successfully");
-  } catch (error) {
-    console.log(error);
-    console.log("Platforms Already Exists");
+  } catch (error: any) {
+    if (error.name === "MongoBulkWriteError") {
+      console.log("Platforms Already Exists");
+    } else {
+      console.log(error);
+    }
   }
   return res;
 }
