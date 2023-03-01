@@ -1,5 +1,7 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import logger from '../logger';
+import IP from 'ip';
+
 
 require('dotenv').config();
 
@@ -17,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
     mongoose.connection.on('connected', () => {
         logger.log({
             level: "info",
-            message: `Database connected`
+            message: `Database connected, ip: ${IP.address()}`
         });
     });
 } else {
@@ -29,7 +31,7 @@ if (process.env.NODE_ENV === 'production') {
     mongoose.connection.on('connected', () => {
         logger.log({
             level: "info",
-            message: `Database connected`
+            message: `Database connected, ip: ${IP.address()}`
         });
     });
 }

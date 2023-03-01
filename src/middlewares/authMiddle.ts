@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+import logger from "../logger";
+import IP from 'ip';
+
 import { verifyJWT } from "../utils/jwtUtils";
 const User = mongoose.model("Users");
 
@@ -22,8 +25,11 @@ export default async function authMiddle(
       req.body = {...req.body, auth: true, user: user};
       next();
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error:any) {
+    logger.log({
+      level: "error",
+      message: `authMiddleware, ip: ${IP.address()} error: ${error.message}`
+    });
     res.status(401).json({
       success: false,
       auth: false,

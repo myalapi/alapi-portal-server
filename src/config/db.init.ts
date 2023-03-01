@@ -1,3 +1,5 @@
+import logger from "../logger";
+import IP from 'ip';
 import Platform from "../models/platform";
 
 export default async function initializePlatforms() {
@@ -47,12 +49,21 @@ export default async function initializePlatforms() {
         },
       },
     ]);
-    console.log("Platforms Created Successfully");
+    logger.log({
+      level: "info",
+      message: `Platforms Initialisation: Platforms Created Successfully, ip: ${IP.address()}`
+    });
   } catch (error: any) {
     if (error.name === "MongoBulkWriteError") {
-      console.log("Platforms Already Exists");
+      logger.log({
+        level: "error",
+        message: `Platforms Initialisation: Platforms Already Exists, ip: ${IP.address()}`
+      });
     } else {
-      console.log(error);
+      logger.log({
+        level: "error",
+        message: `Platforms Initialisation, ip: ${IP.address()} error: ${error.message}`
+      });
     }
   }
   return res;
