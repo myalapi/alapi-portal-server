@@ -15,7 +15,6 @@ const MerchantSchema = new mongoose.Schema({
   createdOn: Date,
   platforms: Object,
   link: String,
-  lastSyncDate: Date,
 });
 
 mongoose.model("Merchants", MerchantSchema, "merchants");
