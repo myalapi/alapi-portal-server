@@ -6,14 +6,13 @@ import {
   DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
 const client = new SecretsManagerClient({
-  region: "ap-south-1",
+  region: "us-east-1",
   credentials: {
     accessKeyId: "AKIA3BJ7GXY2TTULW2SB",
     secretAccessKey: "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",
   },
 });
 export async function createSecret(secretName: string, creds: Object) {
-
   let response;
 
   try {
@@ -23,9 +22,9 @@ export async function createSecret(secretName: string, creds: Object) {
         SecretString: JSON.stringify(creds),
       })
     );
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error.name);
-    
+
     if (error.name === "InvalidRequestException") {
       deleteSecret(secretName);
       response = await client.send(
@@ -80,17 +79,16 @@ export async function updateSecret(secretName: string, creds: Object) {
 
 export async function deleteSecret(secretName: string) {
   let response;
+  console.log("Called");
+  
+  response = await client.send(
+    new DeleteSecretCommand({
+      SecretId: secretName,
+      ForceDeleteWithoutRecovery: true,
+    })
+  );
+  console.log("Called2");
 
-  try {
-    response = await client.send(
-      new DeleteSecretCommand({
-        SecretId: secretName,
-        ForceDeleteWithoutRecovery: true,
-      })
-    );
-  } catch (error) {
-    throw error;
-  }
-  client.destroy();
+  // client.destroy();
   return response.Name;
 }

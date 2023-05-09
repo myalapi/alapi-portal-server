@@ -11,7 +11,7 @@ export interface IPlatform {
   platformUrl: String;
   icon: String;
   type: String;
-  credentials: Array<any>;
+  credentials?: Array<any>;
 }
 const PlatformSchema = new mongoose.Schema<IPlatform>({
   platformKey: { type: String, unique: true },

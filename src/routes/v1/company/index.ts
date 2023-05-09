@@ -137,7 +137,7 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
       level: "error",
       message: `Delete merchant API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} merchantId: ${companyId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
     });
-    return res.sendStatus(error.message);
+    return res.send(error.message);
   }
 });
 
