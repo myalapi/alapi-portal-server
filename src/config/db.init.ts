@@ -33,16 +33,6 @@ export default async function initializePlatforms() {
             platformKey: "abgf",
             platformName: "tally",
             platformUrl: "tally",
-            // credentials: [
-            //   {
-            //     name: "Client Id",
-            //     type: "clientId",
-            //   },
-            //   {
-            //     name: "Client Secret",
-            //     type: "clientSecret",
-            //   },
-            // ],
             type: "Accounting",
             icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Tally_-_Logo.png/1200px-Tally_-_Logo.png",
           },

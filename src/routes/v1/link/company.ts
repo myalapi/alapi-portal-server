@@ -1,11 +1,9 @@
-import { IUser } from "./../../../models/user";
+import { IUser } from "../../../models/user";
 import Router from "express";
-import mongoose from "mongoose";
 import logger from "../../../logger";
-const Merchant = mongoose.model("Merchants");
-const User = mongoose.model("Users");
-import IP from 'ip';
-
+import IP from "ip";
+import { getUser } from "../../../dal/user";
+import { createMerchant } from "../../../dal/merchant";
 
 const router = Router();
 
@@ -29,17 +27,15 @@ router.post("/", async (req, res) => {
         message: "Please provide a valid merchantName",
       });
 
-    const merchant = await Merchant.create({
-      merchantName,
-      userId: req.body.userId,
-      createdOn: Date.now(),
-    });
-    const user: IUser | any = await User.findById(userId);
+    const merchant = await createMerchant(merchantName, req.body.userId);
+    const user: IUser | any = await getUser(userId);
     user.merchants.push(merchant._id);
     await user.save();
     logger.log({
       level: "info",
-      message: `Link portal: Create merchant API, ip: ${IP.address()} userId: ${userId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Link portal: Create merchant API, ip: ${IP.address()} userId: ${userId} URL: ${
+        req.protocol
+      }://${req.get("host")}${req.originalUrl}`,
     });
     return res.status(201).json({
       success: true,
@@ -48,7 +44,11 @@ router.post("/", async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Link portal: Create merchant API, ip: ${IP.address()} error: ${error.message} userId: ${userId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Link portal: Create merchant API, ip: ${IP.address()} error: ${
+        error.message
+      } userId: ${userId} URL: ${req.protocol}://${req.get("host")}${
+        req.originalUrl
+      }`,
     });
     return res.status(500).json({ success: false, message: error.message });
   }

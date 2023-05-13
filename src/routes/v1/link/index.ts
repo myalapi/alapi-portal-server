@@ -1,9 +1,8 @@
-import Router from 'express';
+import Router from "express";
 const router = Router();
 
-
-router.use('/user', require('./userCompanies'));
-router.use('/company', require('./createMerchant'));
-router.use('/platforms', require('./getAllplatforms'));
+router.use("/user", require("./user"));
+router.use("/company", require("./company"));
+router.use("/platforms", require("./platforms"));
 
 module.exports = router;

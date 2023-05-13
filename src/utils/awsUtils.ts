@@ -5,13 +5,17 @@ import {
   UpdateSecretCommand,
   DeleteSecretCommand,
 } from "@aws-sdk/client-secrets-manager";
-const client = new SecretsManagerClient({
-  region: "us-east-1",
+
+const options = {
+  apiVersion: "2017-10-17",
+  region: process.env.AWS_REGION || "null",
   credentials: {
-    accessKeyId: "AKIA3BJ7GXY2TTULW2SB",
-    secretAccessKey: "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",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "null",
+    accessKeyId: process.env.AWS_ACCESS_ID || "null",
   },
-});
+};
+
+const client = new SecretsManagerClient(options);
 export async function createSecret(secretName: string, creds: Object) {
   let response;
 
@@ -37,7 +41,6 @@ export async function createSecret(secretName: string, creds: Object) {
       throw error;
     }
   }
-  client.destroy();
   return response.Name;
 }
 
@@ -55,7 +58,6 @@ export async function getSecret(secretName: string) {
     // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
     throw error;
   }
-  client.destroy();
   const secret = response.SecretString;
   return JSON.parse(secret as string);
 }
@@ -73,21 +75,21 @@ export async function updateSecret(secretName: string, creds: Object) {
   } catch (error) {
     throw error;
   }
-  client.destroy();
   return response.Name;
 }
 
 export async function deleteSecret(secretName: string) {
   let response;
-  console.log("Called");
-  
-  response = await client.send(
-    new DeleteSecretCommand({
-      SecretId: secretName,
-      ForceDeleteWithoutRecovery: true,
-    })
-  );
-  console.log("Called2");
+  try {
+    response = await client.send(
+      new DeleteSecretCommand({
+        SecretId: secretName,
+        ForceDeleteWithoutRecovery: true,
+      })
+    );
+  } catch (error) {
+    throw error;
+  }
 
   // client.destroy();
   return response.Name;

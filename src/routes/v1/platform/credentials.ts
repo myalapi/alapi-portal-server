@@ -115,7 +115,7 @@ router.put("/", authMiddle, async (req, res) => {
       level: "error",
       message: `Update platform credentials API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
     });
-    return res.sendStatus(error.message);
+    return res.send(error.message);
   }
 });
 
@@ -146,7 +146,7 @@ router.delete("/:platformKey", authMiddle, async (req, res) => {
       level: "error",
       message: `Delete platform Credentials API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
     });
-    return res.sendStatus(error.message);
+    return res.send(error.message);
   }
 });
 
