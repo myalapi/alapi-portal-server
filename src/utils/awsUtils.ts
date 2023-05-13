@@ -17,6 +17,7 @@ const options = {
 
 const client = new SecretsManagerClient(options);
 export async function createSecret(secretName: string, creds: Object) {
+
   let response;
 
   try {

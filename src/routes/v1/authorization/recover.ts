@@ -9,7 +9,6 @@ import { getUserByRecoverToken, getUserFromEmail } from "../../../dal/user";
 import logger from "../../../logger";
 import IP from 'ip';
 
-
 const userRouter = Router();
 
 /*Api for sending Password
@@ -22,7 +21,6 @@ userRouter.post("/", async (req, res) => {
 
     if (!user || (!!user && !user.emailConfirmed)) {
       throw new Error("User not found or not confirmed");
-
     }
     const recoverToken = genRecoverToken();
     await user.updateOne({ recoverToken });
@@ -37,6 +35,7 @@ userRouter.post("/", async (req, res) => {
       level: "error",
       message: `Password-Recovery API, ip: ${IP.address()} error: ${error.message} email: ${email} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
     });
+
     console.log(error);
     return res.sendStatus(200);
   }
