@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const Merchants = mongoose.model("Merchants");
 
 export async function getMerchant(id: string) {
-  return await Merchants.findOne({ id: id }).then((merchant) => {
+  return await Merchants.findOne({ _id: id }).then((merchant) => {
     return merchant;
   });
 }

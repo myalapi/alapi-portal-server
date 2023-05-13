@@ -1,7 +1,10 @@
 import { BinaryLike } from "crypto";
 import Router from "express";
+import logger from "../../../logger";
 import authMiddle from "../../../middlewares/authMiddle";
 import { validPassword, genPassword } from "../../../utils/userUtils";
+import IP from 'ip';
+
 
 const router = Router();
 
@@ -25,13 +28,19 @@ router.post("/", authMiddle, async (req, res) => {
     user.salt = saltHash.salt;
     user.hash = saltHash.hash;
     user.save();
-
+    logger.log({
+      level: "info",
+      message: `Change Password API, ip: ${IP.address()} userId: ${user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.json({
       success: true,
       msg: "Password Changed successfully",
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    logger.log({
+      level: "error",
+      message: `Change Password API, ip: ${IP.address()} error: ${error.message} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send({ success: false, msg: "Invalid password" });
   }
 });

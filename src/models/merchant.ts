@@ -1,20 +1,12 @@
-import mongoose from 'mongoose';
-
-// const MerchPlatSchema = new mongoose.Schema({
-//     id:String,
-//     isEnabled: Boolean,
-//     isWorking: Boolean,
-//     credentials: Object
-
-// });
+import mongoose from "mongoose";
 
 const MerchantSchema = new mongoose.Schema({
-    merchantId: Number,
-    merchantName: String,
-    userId:String,
-    createdOn: Date,
-    platforms: Object,
-    link:String,
+  merchantId: Number,
+  merchantName: String,
+  userId: String,
+  createdOn: Date,
+  platforms: Object,
+  link: String,
 });
 
-mongoose.model('Merchants', MerchantSchema, 'merchants');
+mongoose.model("Merchants", MerchantSchema, "merchants");

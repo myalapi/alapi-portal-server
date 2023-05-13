@@ -1,12 +1,13 @@
 import Router from "express";
+import logger from "../../../logger";
 const router = Router();
 import authMiddle from "../../../middlewares/authMiddle";
 import * as awsUtils from "../../../utils/awsUtils";
+import IP from 'ip';
+
 
 router.get("/:platformKey", authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
-  // console.log(req.body);
-
   const user: any = req.body.user;
 
   try {
@@ -23,9 +24,16 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
         return res.send({ success: true, credentials: creds });
       }
     }
+    logger.log({
+      level: "info",
+      message: `Get platform Credentials API, ip: ${IP.address()} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send({ isConfigured: false });
   } catch (error: any) {
-    console.log(error);
+    logger.log({
+      level: "error",
+      message: `Get platform Credentials API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send(error.message);
   }
 });
@@ -65,12 +73,19 @@ router.post("/", authMiddle, async (req, res) => {
 
     platforms.push(platform);
     await user.updateOne({ platforms: platforms });
+    logger.log({
+      level: "info",
+      message: `Configure platform API, ip: ${IP.address()} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send({
       success: true,
       message: "platform created successfully",
     });
   } catch (error: any) {
-    console.log(error);
+    logger.log({
+      level: "error",
+      message: `Configure platform API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send({ success: false, message: error.message });
   }
 });
@@ -90,16 +105,22 @@ router.put("/", authMiddle, async (req, res) => {
       `${user.id.slice(6) + platformKey}`,
       credentials
     );
+    logger.log({
+      level: "info",
+      message: `Update platform Credentials API, ip: ${IP.address()} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.send(200);
   } catch (error: any) {
-    console.log(error);
-    return res.sendStatus(error.message);
+    logger.log({
+      level: "error",
+      message: `Update platform credentials API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
+    return res.send(error.message);
   }
 });
 
 router.delete("/:platformKey", authMiddle, async (req, res) => {
   const platformKey = req.params.platformKey;
-
   const user: any = req.body.user;
 
   try {
@@ -115,10 +136,17 @@ router.delete("/:platformKey", authMiddle, async (req, res) => {
         break;
       }
     }
+    logger.log({
+      level: "info",
+      message: `Delete platform Credentials API, ip: ${IP.address()} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
     return res.sendStatus(200);
   } catch (error: any) {
-    console.log(error);
-    return res.sendStatus(error.message);
+    logger.log({
+      level: "error",
+      message: `Delete platform Credentials API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} platformKey: ${platformKey} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
+    return res.send(error.message);
   }
 });
 

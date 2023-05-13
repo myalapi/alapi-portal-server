@@ -1,3 +1,5 @@
+import logger from "../logger";
+import IP from 'ip';
 import Platform from "../models/platform";
 
 export default async function initializePlatforms() {
@@ -31,26 +33,28 @@ export default async function initializePlatforms() {
             platformKey: "abgf",
             platformName: "tally",
             platformUrl: "tally",
-            credentials: [
-              {
-                name: "Client Id",
-                type: "clientId",
-              },
-              {
-                name: "Client Secret",
-                type: "clientSecret",
-              },
-            ],
             type: "Accounting",
             icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Tally_-_Logo.png/1200px-Tally_-_Logo.png",
           },
         },
       },
     ]);
-    console.log("Platforms Created Successfully");
-  } catch (error) {
-    console.log(error);
-    console.log("Platforms Already Exists");
+    logger.log({
+      level: "info",
+      message: `Platforms Initialisation: Platforms Created Successfully, ip: ${IP.address()}`
+    });
+  } catch (error: any) {
+    if (error.name === "MongoBulkWriteError") {
+      logger.log({
+        level: "error",
+        message: `Platforms Initialisation: Platforms Already Exists, ip: ${IP.address()}`
+      });
+    } else {
+      logger.log({
+        level: "error",
+        message: `Platforms Initialisation, ip: ${IP.address()} error: ${error.message}`
+      });
+    }
   }
   return res;
 }

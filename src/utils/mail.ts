@@ -1,9 +1,10 @@
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
+import logger from "../logger";
 
-const hostname = "smtp.zoho.in";
-const username = "support@alapi.co";
-const password = "Support@2022";
+const hostname = process.env.ZOHO_HOST;
+const username = process.env.ZOHO_MAIL;
+const password = process.env.ZOHO_PASSWORD;
 
 export function mailOptions(
   from: String,
@@ -36,5 +37,8 @@ export async function mail(mailOptions: Mail.Options) {
     logger: true,
   });
   const info = await transporter.sendMail(mailOptions);
-  console.log(info.response);
+  logger.log({
+    level: "info",
+    message: `Sent mail: ${info.response}`,
+  });
 }
