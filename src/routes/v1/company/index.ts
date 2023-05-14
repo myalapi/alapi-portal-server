@@ -2,7 +2,7 @@ import Router from "express";
 import authMiddle from "../../../middlewares/authMiddle";
 import {
   createMerchant,
-  getMercants,
+  getMerchants,
   getMerchant,
   searchMerchants,
 } from "../../../dal/merchant";
@@ -16,7 +16,7 @@ const router = Router();
 router.get("/", authMiddle, async (req, res) => {
   const merchants = req.body.user.merchants;
   try {
-    const merchs = await getMercants(merchants);
+    const merchs = await getMerchants(merchants);
     const finalMerchs = [];
     for (var i = 0; i < merchs.length; i++) {
       const m: any = merchs[i];

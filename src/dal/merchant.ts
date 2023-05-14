@@ -1,25 +1,25 @@
-import mongoose from "mongoose";
-const Merchants = mongoose.model("Merchants");
+import Merchant from "../models/merchant";
+
 
 export async function getMerchant(id: string) {
-  return await Merchants.findOne({ _id: id }).then((merchant) => {
+  return await Merchant.findOne({ _id: id }).then((merchant) => {
     return merchant;
   });
 }
 
-export async function getMercants(ids: [number]) {
-  return await Merchants.find({ _id: { $in: ids } });
+export async function getMerchants(ids: [number]) {
+  return await Merchant.find({ _id: { $in: ids } });
 }
 
 export async function searchMerchants(search: string, ids: [string]) {
-  return await Merchants.find({
+  return await Merchant.find({
     merchantName: { $regex: search, $options: "i" },
     _id: { $in: ids },
   });
 }
 
 export async function createMerchant(merchantName: string, userId: string) {
-  const merchant: any = await Merchants.create({
+  const merchant: any = await Merchant.create({
     merchantName,
     userId: userId,
     createdOn: Date.now(),

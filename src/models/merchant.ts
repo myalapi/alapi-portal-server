@@ -9,4 +9,5 @@ const MerchantSchema = new mongoose.Schema({
   link: String,
 });
 
-mongoose.model("Merchants", MerchantSchema, "merchants");
+const Merchant = mongoose.model("Merchant", MerchantSchema, "merchants");
+export default Merchant; 

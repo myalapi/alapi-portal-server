@@ -12,7 +12,9 @@ router.get("/:token", async (req, res) => {
 
   try {
     const verify: any = verifyJWT(token);
-    await updateUserConfirm(verify.sub);
+    const user = await updateUserConfirm(verify.sub);
+    console.log(user);
+    
     logger.log({
       level: "info",
       message: `Verify Token API, ip: ${IP.address()} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`

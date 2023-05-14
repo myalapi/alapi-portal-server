@@ -1,22 +1,20 @@
-import mongoose from "mongoose";
 import { createNewUser } from "../utils/userUtils";
-const Users = mongoose.model("Users");
+import User from "../models/user";
 
 export async function getUser(id: string) {
-  return await Users.findOne({ _id: id }).then((user) => {
+  return await User.findOne({ _id: id }).then((user) => {
     return user;
   });
 }
 
-
 export async function getUserByRecoverToken(recoverToken: string) {
-  return await Users.findOne({ recoverToken: recoverToken }).then((user) => {
+  return await User.findOne({ recoverToken: recoverToken }).then((user) => {
     return user;
   });
 }
 
 export async function getUserFromEmail(email: string) {
-  return await Users.findOne({ email: email }).then((user) => {
+  return await User.findOne({ email: email }).then((user) => {
     return user;
   });
 }
@@ -27,11 +25,11 @@ export async function createUser(
   companyName: String,
   name: String
 ) {
-  const newUser: any = new Users({
+  const newUser: any = new User({
     ...createNewUser(email, password, companyName, name),
   });
 
-  const user: any = await Users.findOne({ email: email }).then((user) => {
+  const user: any = await User.findOne({ email: email }).then((user) => {
     return user;
   });
   if (!user) {
@@ -46,5 +44,5 @@ export async function createUser(
 }
 
 export async function updateUserConfirm(id: string) {
-  return await Users.updateOne({ __id: id }, { $set: { emailConfirmed: true } });
+  return await User.updateOne({ _id: id }, { $set: { emailConfirmed: true } });
 }
