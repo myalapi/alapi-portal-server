@@ -10,7 +10,7 @@ export default function prodLogger() {
     level: "debug",
     format: combine(timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), myFormat),
     transports: [
-      new transports.File({ filename: "logs/server/serverLogs.log", maxsize: 1024 }),
+      new transports.File({ filename: "logs/server/serverLogs.log", maxsize: 102400 }),
     ],
   });
 }
