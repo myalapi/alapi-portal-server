@@ -17,7 +17,7 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
     let platforms = user.platforms;
     for (var i = 0; i < platforms.length; i++) {
       if (
-        platforms[i].platformKey === platformKey &&
+        platforms[i].platformKey.localeCompare( platformKey)===0 &&
         platforms[i].isConfigured === true
       ) {
         const creds = await awsUtils.getSecret(platforms[i].awsSecretName);

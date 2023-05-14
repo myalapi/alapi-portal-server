@@ -1,5 +1,6 @@
 import { createNewUser } from "../utils/userUtils";
 import User from "../models/user";
+import mongoose from "mongoose";
 
 export async function getUser(id: string) {
   return await User.findOne({ _id: id }).then((user) => {
@@ -44,5 +45,8 @@ export async function createUser(
 }
 
 export async function updateUserConfirm(id: string) {
-  return await User.updateOne({ _id: id }, { $set: { emailConfirmed: true } });
+  return await User.updateOne(
+    { _id: new mongoose.Types.ObjectId(id) },
+    { $set: { "emailConfirmed": true } }
+  );
 }
