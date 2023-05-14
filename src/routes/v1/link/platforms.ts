@@ -106,7 +106,7 @@ router.post("/:platformKey", async (req, res) => {
         ) {
           const url =
             process.env.ALAPI_API_URL +
-            "/v1/auth/" +
+            "/auth/" +
             platform.platformUrl +
             "?";
           const params: any = {
