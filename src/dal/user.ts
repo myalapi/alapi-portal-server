@@ -45,8 +45,11 @@ export async function createUser(
 }
 
 export async function updateUserConfirm(id: string) {
-  return await User.updateOne(
-    { _id: new mongoose.Types.ObjectId(id) },
-    { $set: { "emailConfirmed": true } }
-  );
+  const user: any = await User.findOne({
+    _id: new mongoose.Types.ObjectId(id),
+  });
+  
+  user.emailConfirmed = true;
+  await user.save();
+  return user;
 }
