@@ -22,7 +22,7 @@ const app = App();
 
 app.use(
   cors({
-    origin: ["https://app.alapi.co","https://link.alapi.co", "http://localhost:3000", "http://localhost:3001"],
+    origin: ["https://app.alapi.co","https://link.alapi.co","https://app.testalapi.co","https://link.testalapi.co", "http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   })
 );
