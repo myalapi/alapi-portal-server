@@ -1,9 +1,9 @@
-name: Deploy to EC2
+name: Deploy to Test Web Server
 
 on:
   push:
     branches:
-      - main
+      - test
 
 env:
   AWS_REGION: ap-south-1
@@ -35,18 +35,18 @@ jobs:
     - name: Copy code to EC2 instance
       uses: appleboy/scp-action@master
       with:
-        host: 3.6.172.161
+        host: 13.234.63.63
         username: "ubuntu"
-        key_path: ./.github/staging.pem
+        key_path: ./.github/staging-test.pem
         source: .
         target: /DATA01/builds/portal-server-new/
 
     - name: Restart Service
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: "3.6.172.161"
+        host: "13.234.63.63"
         username: "ubuntu"
-        key_path: ./.github/staging.pem
+        key_path: ./.github/staging-test.pem
         port: 22
         script: |
           rm -rf /DATA01/builds/portal-server-old
