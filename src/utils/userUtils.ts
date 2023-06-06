@@ -1,8 +1,9 @@
 import crypto, { BinaryLike } from "crypto";
 import { issueJWT } from "./jwtUtils";
-import { mail, mailOptions } from "./mail";
+import { mailOptions } from "./mail";
 import ejs from "ejs";
 import path from "path";
+import { sendZeptoMail } from "./zeptomail";
 
 export function validPassword(
   password: BinaryLike,
@@ -72,14 +73,14 @@ export async function sendVerifEmail(userId: any, email: String) {
     { verifyLink: url }
   );
   const mailOption = mailOptions(
-    '"Alapi" support@alapi.co',
+    "support@alapi.co",
     email,
     "Account Verification",
     "",
     { "x-myheader": "test header" },
     data
   );
-  await mail(mailOption);
+  await sendZeptoMail(mailOption);
 }
 
 export async function sendResetPasswordEmail(
@@ -92,12 +93,12 @@ export async function sendResetPasswordEmail(
     { resetLink: url }
   );
   const mailOption = mailOptions(
-    '"Alapi" support@alapi.co',
+    'support@alapi.co',
     email,
     "Password Reset Email",
     "",
     { "x-myheader": "test header" },
     data
   );
-  await mail(mailOption);
+  await sendZeptoMail(mailOption);
 }
