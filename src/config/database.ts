@@ -12,7 +12,8 @@ const prodConnection: string = process.env.DB_STRING_PROD as string;
 if (process.env.NODE_ENV === 'production') {
     mongoose.connect(prodConnection, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        connectTimeoutMS:0
     } as ConnectOptions);
 
     mongoose.connection.on('connected', () => {
@@ -24,7 +25,9 @@ if (process.env.NODE_ENV === 'production') {
 } else {
     mongoose.connect(devConnection, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        connectTimeoutMS:0
+
     } as ConnectOptions);
 
     mongoose.connection.on('connected', () => {

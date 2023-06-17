@@ -1,6 +1,5 @@
 import Merchant from "../models/merchant";
 
-
 export async function getMerchant(id: string) {
   return await Merchant.findOne({ _id: id }).then((merchant) => {
     return merchant;
@@ -13,12 +12,25 @@ export async function getMerchants(ids: [number]) {
 
 export async function searchMerchants(search: string, ids: [string]) {
   return await Merchant.find({
-    merchantName: { $regex: search, $options: "i" },
-    _id: { $in: ids },
+    $and: [
+      {
+        $or: [
+          { merchantName: { $regex: search, $options: "i" } },
+          { merchantEmail: { $regex: search, $options: "i" } },
+        ],
+      },
+      {
+        _id: { $in: ids },
+      },
+    ],
   });
 }
 
-export async function createMerchant(merchantName: string, merchantEmail:string, userId: string) {
+export async function createMerchant(
+  merchantName: string,
+  merchantEmail: string,
+  userId: string
+) {
   const merchant: any = await Merchant.create({
     merchantName,
     merchantEmail,
