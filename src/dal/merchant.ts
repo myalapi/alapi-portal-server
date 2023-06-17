@@ -18,9 +18,10 @@ export async function searchMerchants(search: string, ids: [string]) {
   });
 }
 
-export async function createMerchant(merchantName: string, userId: string) {
+export async function createMerchant(merchantName: string, merchantEmail:string, userId: string) {
   const merchant: any = await Merchant.create({
     merchantName,
+    merchantEmail,
     userId: userId,
     createdOn: Date.now(),
   });

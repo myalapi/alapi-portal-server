@@ -8,7 +8,7 @@ import { createMerchant } from "../../../dal/merchant";
 const router = Router();
 
 router.post("/", async (req, res) => {
-  const { userId, merchantName } = req.body;
+  const { userId, merchantName, merchantEmail } = req.body;
 
   try {
     if (
@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
         message: "Please provide a valid merchantName",
       });
 
-    const merchant = await createMerchant(merchantName, req.body.userId);
+    const merchant = await createMerchant(merchantName, merchantEmail, req.body.userId);
     const user: IUser | any = await getUser(userId);
     user.merchants.push(merchant._id);
     await user.save();

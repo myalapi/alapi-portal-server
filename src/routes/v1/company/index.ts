@@ -73,7 +73,7 @@ router.get("/search", authMiddle, async (req, res) => {
 });
 
 router.post("/create", authMiddle, async (req, res) => {
-  const { merchantName } = req.body;
+  const { merchantName, merchantEmail } = req.body;
   const user = req.body.user;
   try {
     if (typeof merchantName !== "string" || merchantName.length === 0)
@@ -81,8 +81,13 @@ router.post("/create", authMiddle, async (req, res) => {
         success: false,
         message: "Please provide a valid merchantName",
       });
+    if (typeof merchantEmail !== "string" || merchantEmail.length === 0)
+      return res.status(401).json({
+        success: false,
+        message: "Please provide a valid merchantEmail",
+      });
 
-    const merchant = await createMerchant(merchantName, user._id);
+    const merchant = await createMerchant(merchantName, merchantEmail, user._id);
 
     user.merchants.push(merchant._id);
     await user.save();
