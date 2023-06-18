@@ -18,7 +18,11 @@ export default function prodLogger() {
       new transports.MongoDB({
         level: "debug",
         db: process.env.DB_STRING_PROD as string,
-        options: { useUnifiedTopology: true },
+        options: {
+          useUnifiedTopology: true,
+          socketTimeoutMS: 0,
+          connectTimeoutMS: 0,
+        },
         collection: "serverLogs",
       }),
     ],

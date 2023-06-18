@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const MerchantSchema = new mongoose.Schema({
-  merchantId: Number,
   merchantName: String,
+  merchantEmail: String,
   userId: String,
   createdOn: Date,
   platforms: Object,
