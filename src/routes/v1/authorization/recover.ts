@@ -15,7 +15,7 @@ const userRouter = Router();
     Reset link to the user*/
 
 userRouter.post("/", async (req, res) => {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   try {
     const user: any = await getUserFromEmail(email);
 

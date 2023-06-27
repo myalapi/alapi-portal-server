@@ -1,36 +1,24 @@
 import dotenv from "dotenv";
-import cors from "cors";
+
 import App from "./app";
 import initializePlatforms from "./config/db.init";
-import IP from 'ip';
+import logger from "./logger/index";
 
 dotenv.config();
 
-import logger from "./logger/index";
-
-
-require("./config/database");
-require("./models/user");
-require("./models/merchant");
-require("./models/platform");
+import connectMongoose from "./config/database";
 
 initializePlatforms();
 
 const PORT = process.env.SERVER_PORT || 8000;
 
-const app = App();
-
-app.use(
-  cors({
-    origin: ["https://app.alapi.co","https://link.alapi.co","https://app.testalapi.co","https://link.testalapi.co", "http://localhost:3000", "http://localhost:3001"],
-    credentials: true,
-  })
-);
-app.use(require("./routes"));
-
-app.listen(PORT, function () {
-  logger.log({
-    level: "info",
-    message: `listening on port ${PORT}: http://localhost:${PORT} ip: ${IP.address()}`
+connectMongoose(() => {
+  let app = App();
+  app.listen(PORT, function () {
+    logger.log({
+      level: "info",
+      message: `listening on port ${PORT}: http://localhost:${PORT}}`,
+    });
   });
+  return App;
 });
