@@ -8,7 +8,8 @@ import { createMerchant } from "../../../dal/merchant";
 const router = Router();
 
 router.post("/", async (req, res) => {
-  const { userId, merchantName, merchantEmail } = req.body;
+  const { userId, merchantName } = req.body;
+  const merchantEmail = req.body.merchantEmail.toLowerCase();
 
   try {
     if (

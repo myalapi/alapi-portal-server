@@ -7,8 +7,7 @@ import {
   searchMerchants,
 } from "../../../dal/merchant";
 import logger from "../../../logger";
-import IP from 'ip';
-
+import IP from "ip";
 
 const router = Router();
 
@@ -25,18 +24,24 @@ router.get("/", authMiddle, async (req, res) => {
         name: m.merchantName,
         createdOn: m.createdOn,
         platforms: m.platforms ? Object.keys(m.platforms) : null,
-        link: m.link
+        link: m.link,
       });
     }
     logger.log({
       level: "info",
-      message: `Get all merchants API, ip: ${IP.address()} userId: ${req.body.user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Get all merchants API, ip: ${IP.address()} userId: ${
+        req.body.user._id
+      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     res.send({ companies: finalMerchs });
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Get all merchants API, ip: ${IP.address()} error: ${error.message} userId: ${req.body.user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Get all merchants API, ip: ${IP.address()} error: ${
+        error.message
+      } userId: ${req.body.user._id} URL: ${req.protocol}://${req.get("host")}${
+        req.originalUrl
+      }`,
     });
     res.send({ success: false, error: error });
   }
@@ -44,7 +49,8 @@ router.get("/", authMiddle, async (req, res) => {
 
 router.get("/search", authMiddle, async (req, res) => {
   const merchants = req.body.user.merchants;
-  const query: string = req.query.search === undefined ? "" : req.query.search as string;
+  const query: string =
+    req.query.search === undefined ? "" : (req.query.search as string);
   try {
     const merchs = await searchMerchants(query, merchants);
     const finalMerchs = [];
@@ -55,26 +61,33 @@ router.get("/search", authMiddle, async (req, res) => {
         name: m.merchantName,
         createdOn: m.createdOn,
         platforms: m.platforms ? Object.keys(m.platforms) : null,
-        link: m.link
+        link: m.link,
       });
     }
     logger.log({
       level: "info",
-      message: `Merchants search API, ip: ${IP.address()} userId: ${req.body.user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Merchants search API, ip: ${IP.address()} userId: ${
+        req.body.user._id
+      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     res.send({ companies: merchs });
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Merchants search API, ip: ${IP.address()} error: ${error.message} userId: ${req.body.user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Merchants search API, ip: ${IP.address()} error: ${
+        error.message
+      } userId: ${req.body.user._id} URL: ${req.protocol}://${req.get("host")}${
+        req.originalUrl
+      }`,
     });
     res.send({ success: false, error: error });
   }
 });
 
 router.post("/create", authMiddle, async (req, res) => {
-  const { merchantName, merchantEmail } = req.body;
-  const user = req.body.user;
+  let { merchantName } = req.body;
+  let merchantEmail = req.body.merchantEmail.toLowerCase();
+  let user = req.body.user;
   try {
     if (typeof merchantName !== "string" || merchantName.length === 0)
       return res.status(401).json({
@@ -87,14 +100,22 @@ router.post("/create", authMiddle, async (req, res) => {
         message: "Please provide a valid merchantEmail",
       });
 
-    const merchant = await createMerchant(merchantName, merchantEmail, user._id);
+    const merchant = await createMerchant(
+      merchantName,
+      merchantEmail,
+      user._id
+    );
 
     user.merchants.push(merchant._id);
     await user.save();
 
     logger.log({
       level: "info",
-      message: `Create merchant API, ip: ${IP.address()} userId: ${user._id} merchantId: ${merchant._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Create merchant API, ip: ${IP.address()} userId: ${
+        user._id
+      } merchantId: ${merchant._id} URL: ${req.protocol}://${req.get("host")}${
+        req.originalUrl
+      }`,
     });
     return res.status(201).json({
       success: true,
@@ -103,7 +124,11 @@ router.post("/create", authMiddle, async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Create merchant API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Create merchant API, ip: ${IP.address()} error: ${
+        error.message
+      } userId: ${user._id} URL: ${req.protocol}://${req.get("host")}${
+        req.originalUrl
+      }`,
     });
     return res
       .status(500)
@@ -131,20 +156,25 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     await user.save();
     logger.log({
       level: "info",
-      message: `Delete merchant API, ip: ${IP.address()} userId: ${user._id} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Delete merchant API, ip: ${IP.address()} userId: ${
+        user._id
+      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     return res.status(200).json({
       success: true,
-      message: "Company deleted successfully"
-    })
+      message: "Company deleted successfully",
+    });
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Delete merchant API, ip: ${IP.address()} error: ${error.message} userId: ${user._id} merchantId: ${companyId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+      message: `Delete merchant API, ip: ${IP.address()} error: ${
+        error.message
+      } userId: ${user._id} merchantId: ${companyId} URL: ${
+        req.protocol
+      }://${req.get("host")}${req.originalUrl}`,
     });
     return res.send(error.message);
   }
 });
-
 
 module.exports = router;
