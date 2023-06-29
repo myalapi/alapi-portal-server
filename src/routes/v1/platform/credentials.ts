@@ -17,7 +17,7 @@ router.get("/:platformKey", authMiddle, async (req, res) => {
     let platforms = user.platforms;
     for (var i = 0; i < platforms.length; i++) {
       if (
-        platforms[i].platformKey.localeCompare( platformKey)===0 &&
+        platforms[i].platformKey.localeCompare(platformKey) === 0 &&
         platforms[i].isConfigured === true
       ) {
         const creds = await awsUtils.getSecret(platforms[i].awsSecretName);
@@ -127,10 +127,10 @@ router.delete("/:platformKey", authMiddle, async (req, res) => {
     if (platformKey === undefined || platformKey === null) {
       throw new Error("Platform Key not found");
     }
-    await awsUtils.deleteSecret(`${user.id.slice(6) + platformKey}`);
     let platforms = user.platforms;
     for (var i = 0; i < platforms.length; i++) {
       if (platforms[i].platformKey === platformKey) {
+        await awsUtils.deleteSecret(`${platforms[i].awsSecretName}`);
         platforms.splice(i, 1);
         await user.updateOne({ platforms: platforms });
         break;
