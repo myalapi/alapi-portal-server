@@ -15,8 +15,7 @@ export interface IUser {
   hash: String;
   emailConfirmed: Boolean;
   phoneConfirmed: Boolean;
-  clientId: String;
-  clientSecret: String;
+  apiKey: String;
   platforms: [];
   merchants: [];
   recoverToken: String;
@@ -29,8 +28,7 @@ const UserSchema = new mongoose.Schema<IUser>({
   hash: String,
   emailConfirmed: Boolean,
   phoneConfirmed: Boolean,
-  clientId: String,
-  clientSecret: String,
+  apiKey: String,
   platforms: [Platform],
   merchants: Array,
   recoverToken: String,

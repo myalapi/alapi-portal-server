@@ -20,6 +20,7 @@ export default function prodLogger() {
         db: process.env.DB_STRING_PROD as string,
         options: {
           useUnifiedTopology: true,
+          useNewUrlParser: true,
           socketTimeoutMS: 0,
           connectTimeoutMS: 0,
         },

@@ -8,11 +8,11 @@ dotenv.config();
 
 import connectMongoose from "./config/database";
 
-initializePlatforms();
 
 const PORT = process.env.SERVER_PORT || 8000;
 
 connectMongoose(() => {
+  initializePlatforms();
   let app = App();
   app.listen(PORT, function () {
     logger.log({

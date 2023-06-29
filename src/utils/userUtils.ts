@@ -23,8 +23,7 @@ export function createNewUser(
   name: String
 ) {
   const saltHash = genPassword(password);
-  const { clientId, clientSecret }: { clientId: String; clientSecret: String } =
-    genClientKeys();
+  const apiKey: String =genApiKey();
 
   const userObj = {
     name: name,
@@ -34,8 +33,7 @@ export function createNewUser(
     hash: saltHash.hash,
     emailConfirmed: false,
     phoneConfirmed: false,
-    clientId: clientId,
-    clientSecret: clientSecret,
+    apiKey: apiKey,
   };
   return userObj;
 }
@@ -52,13 +50,9 @@ export function genPassword(password: BinaryLike) {
   };
 }
 
-export function genClientKeys() {
-  var clientId: String = crypto.randomBytes(12).toString("hex");
-  var clientSecret: String = crypto.randomBytes(12).toString("hex");
-  return {
-    clientId: clientId,
-    clientSecret: clientSecret,
-  };
+export function genApiKey() {
+  var apiKey: String = crypto.randomBytes(12).toString("hex");
+  return apiKey;
 }
 
 export function genRecoverToken() {
