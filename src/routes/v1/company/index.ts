@@ -136,6 +136,38 @@ router.post("/create", authMiddle, async (req, res) => {
   }
 });
 
+//Get single merchant from merchantId
+router.get("/:merchantId", authMiddle, async (req, res) => {
+  const merchantId = req.params.merchantId;
+  try {
+    if (
+      merchantId === undefined ||
+      merchantId === null
+    ) {
+      throw new Error(`Invalid Merchant ID`);
+    }
+    const merchant: any = await getMerchant(merchantId);
+    if (!merchant) {
+      throw new Error(`No Merchant found for ${merchantId}`);
+    }
+    logger.log({
+    level: "info",
+    message: `Get merchant API, ip: ${IP.address()} userId: ${
+      req.body.user._id
+    } merchantId: ${merchantId} URL: ${req.protocol}://${req.get(
+      "host"
+    )}${req.originalUrl}`,
+  });
+    res.send({ merchant: merchant });
+  } catch (err: any) {
+    logger.log({
+      level: "error",
+      message: `Merchant middleware, ip: ${IP.address()} error: ${err.message} userId: ${req.body.user._id} merchantId: ${merchantId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
+    res.send({ success: false, error: err })
+  }
+});
+
 router.delete("/:companyId", authMiddle, async (req, res) => {
   const companyId = req.params.companyId;
   const user: any = req.body.user;
