@@ -27,6 +27,7 @@ export function verifyJWT(token: string) {
 }
 export const jwtOptions: CookieOptions = {
   sameSite: "none",
+  domain: process.env.DOMAIN,
   secure: true,
   maxAge: 1000000 * 60 * 15, // would expire after 15 minutes
   httpOnly: true, // The cookie only accessible by the web server

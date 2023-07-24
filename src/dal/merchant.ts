@@ -1,6 +1,10 @@
 import Merchant from "../models/merchant";
+import mongoose from "mongoose";
 
 export async function getMerchant(id: string) {
+  if(!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("Invalid Merchant ID");
+  }
   return await Merchant.findOne({ _id: id }).then((merchant) => {
     return merchant;
   });

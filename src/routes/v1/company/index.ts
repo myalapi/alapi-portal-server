@@ -8,6 +8,8 @@ import {
 } from "../../../dal/merchant";
 import logger from "../../../logger";
 import IP from "ip";
+import platformKeys from "../../../constant/platformKeys";
+import { deleteTallyUser } from "../../../dal/tallyUser";
 
 const router = Router();
 
@@ -29,19 +31,16 @@ router.get("/", authMiddle, async (req, res) => {
     }
     logger.log({
       level: "info",
-      message: `Get all merchants API, ip: ${IP.address()} userId: ${
-        req.body.user._id
-      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
+      message: `Get all merchants API, ip: ${IP.address()} userId: ${req.body.user._id
+        } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     res.send({ companies: finalMerchs });
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Get all merchants API, ip: ${IP.address()} error: ${
-        error.message
-      } userId: ${req.body.user._id} URL: ${req.protocol}://${req.get("host")}${
-        req.originalUrl
-      }`,
+      message: `Get all merchants API, ip: ${IP.address()} error: ${error.message
+        } userId: ${req.body.user._id} URL: ${req.protocol}://${req.get("host")}${req.originalUrl
+        }`,
     });
     res.send({ success: false, error: error });
   }
@@ -66,19 +65,16 @@ router.get("/search", authMiddle, async (req, res) => {
     }
     logger.log({
       level: "info",
-      message: `Merchants search API, ip: ${IP.address()} userId: ${
-        req.body.user._id
-      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
+      message: `Merchants search API, ip: ${IP.address()} userId: ${req.body.user._id
+        } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     res.send({ companies: merchs });
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Merchants search API, ip: ${IP.address()} error: ${
-        error.message
-      } userId: ${req.body.user._id} URL: ${req.protocol}://${req.get("host")}${
-        req.originalUrl
-      }`,
+      message: `Merchants search API, ip: ${IP.address()} error: ${error.message
+        } userId: ${req.body.user._id} URL: ${req.protocol}://${req.get("host")}${req.originalUrl
+        }`,
     });
     res.send({ success: false, error: error });
   }
@@ -111,11 +107,9 @@ router.post("/create", authMiddle, async (req, res) => {
 
     logger.log({
       level: "info",
-      message: `Create merchant API, ip: ${IP.address()} userId: ${
-        user._id
-      } merchantId: ${merchant._id} URL: ${req.protocol}://${req.get("host")}${
-        req.originalUrl
-      }`,
+      message: `Create merchant API, ip: ${IP.address()} userId: ${user._id
+        } merchantId: ${merchant._id} URL: ${req.protocol}://${req.get("host")}${req.originalUrl
+        }`,
     });
     return res.status(201).json({
       success: true,
@@ -124,15 +118,44 @@ router.post("/create", authMiddle, async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Create merchant API, ip: ${IP.address()} error: ${
-        error.message
-      } userId: ${user._id} URL: ${req.protocol}://${req.get("host")}${
-        req.originalUrl
-      }`,
+      message: `Create merchant API, ip: ${IP.address()} error: ${error.message
+        } userId: ${user._id} URL: ${req.protocol}://${req.get("host")}${req.originalUrl
+        }`,
     });
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+//Get single merchant from merchantId
+router.get("/:merchantId", authMiddle, async (req, res) => {
+  const merchantId = req.params.merchantId;
+  try {
+    if (
+      merchantId === undefined ||
+      merchantId === null
+    ) {
+      throw new Error(`Invalid Merchant ID`);
+    }
+    const merchant: any = await getMerchant(merchantId);
+    if (!merchant) {
+      throw new Error(`No Merchant found for ${merchantId}`);
+    }
+    logger.log({
+      level: "info",
+      message: `Get merchant API, ip: ${IP.address()} userId: ${req.body.user._id
+        } merchantId: ${merchantId} URL: ${req.protocol}://${req.get(
+          "host"
+        )}${req.originalUrl}`,
+    });
+    res.send({ merchant: merchant });
+  } catch (err: any) {
+    logger.log({
+      level: "error",
+      message: `Merchant middleware, ip: ${IP.address()} error: ${err.message} userId: ${req.body.user._id} merchantId: ${merchantId} URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`
+    });
+    res.send({ success: false, error: err })
   }
 });
 
@@ -147,6 +170,9 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     if (company === null) {
       throw new Error("Company not found");
     }
+    if (company.platforms[platformKeys.tally]) {
+      await deleteTallyUser(company.platforms[platformKeys.tally].tallyUserId);
+    }
     await company.remove();
 
     const merchantArray = user.merchants;
@@ -156,9 +182,8 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     await user.save();
     logger.log({
       level: "info",
-      message: `Delete merchant API, ip: ${IP.address()} userId: ${
-        user._id
-      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
+      message: `Delete merchant API, ip: ${IP.address()} userId: ${user._id
+        } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     return res.status(200).json({
       success: true,
@@ -167,11 +192,9 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Delete merchant API, ip: ${IP.address()} error: ${
-        error.message
-      } userId: ${user._id} merchantId: ${companyId} URL: ${
-        req.protocol
-      }://${req.get("host")}${req.originalUrl}`,
+      message: `Delete merchant API, ip: ${IP.address()} error: ${error.message
+        } userId: ${user._id} merchantId: ${companyId} URL: ${req.protocol
+        }://${req.get("host")}${req.originalUrl}`,
     });
     return res.send(error.message);
   }

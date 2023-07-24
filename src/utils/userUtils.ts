@@ -79,7 +79,7 @@ export async function sendVerifEmail(userId: any, email: String) {
 
 export async function sendResetPasswordEmail(
   recoverToken: string,
-  email: String
+  email: string
 ) {
   const url = `${process.env.WEB_URL}/recover/${recoverToken}`;
   const data = await ejs.renderFile(
