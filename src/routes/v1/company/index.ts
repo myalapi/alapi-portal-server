@@ -170,7 +170,7 @@ router.delete("/:companyId", authMiddle, async (req, res) => {
     if (company === null) {
       throw new Error("Company not found");
     }
-    if (company.platforms[platformKeys.tally]) {
+    if (company.platforms && company.platforms[platformKeys.tally]) {
       await deleteTallyUser(company.platforms[platformKeys.tally].tallyUserId);
     }
     await company.remove();
