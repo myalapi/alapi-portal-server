@@ -1,11 +1,11 @@
-import { IPlatform } from "../../../models/platform";
+import { IPlatform } from "../../../../models/platform";
 import Router from "express";
 import querystring from "querystring";
-import logger from "../../../logger";
+import logger from "../../../../logger";
 import IP from "ip";
-import { getMerchant } from "../../../dal/merchant";
-import { getUser } from "../../../dal/user";
-import { getPlatformByKey } from "../../../dal/platform";
+import { getMerchant } from "../../../../dal/merchant";
+import { getUser } from "../../../../dal/user";
+import { getPlatformByKey } from "../../../../dal/platform";
 
 const router = Router();
 
@@ -13,8 +13,8 @@ interface LinkPlatform extends Partial<IPlatform> {
   isConnected?: Boolean;
 }
 
-router.get("/:companyId", async (req, res) => {
-  const merchantId = req.params.companyId;
+router.get("/", async (req, res) => {
+  const merchantId = String(req.query.merchantId);
   try {
     if (merchantId === null || merchantId === undefined) {
       return res
@@ -57,9 +57,8 @@ router.get("/:companyId", async (req, res) => {
     }
     logger.log({
       level: "info",
-      message: `Link portal: get all platforms API, ip: ${IP.address()} merchantId: ${merchantId} userId: ${
-        user.id
-      } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
+      message: `Link portal: get all platforms API, ip: ${IP.address()} merchantId: ${merchantId} userId: ${user.id
+        } URL: ${req.protocol}://${req.get("host")}${req.originalUrl}`,
     });
     return res.status(200).json({
       success: true,
@@ -69,19 +68,17 @@ router.get("/:companyId", async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Link portal: get all platforms API, ip: ${IP.address()} error: ${
-        error.message
-      } merchantId:${merchantId} URL: ${req.protocol}://${req.get("host")}${
-        req.originalUrl
-      }`,
+      message: `Link portal: get all platforms API, ip: ${IP.address()} error: ${error.message
+        } merchantId:${merchantId} URL: ${req.protocol}://${req.get("host")}${req.originalUrl
+        }`,
     });
     return res.send({ success: false, message: error.message });
   }
 });
 
 // Get single platform connection url merchant
-router.post("/:platformKey", async (req, res) => {
-  const merchantId = req.body.merchantId;
+router.get("/:platformKey", async (req, res) => {
+  const merchantId = String(req.query.merchantId);
   const platformKey = req.params.platformKey;
   try {
     if (
@@ -115,11 +112,9 @@ router.post("/:platformKey", async (req, res) => {
           };
           logger.log({
             level: "info",
-            message: `Get platform's connection url API, ip: ${IP.address()} userId: ${
-              user._id
-            } merchantId: ${merchant._id} platformKey: ${platformKey} URL: ${
-              req.protocol
-            }://${req.get("host")}${req.originalUrl}`,
+            message: `Get platform's connection url API, ip: ${IP.address()} userId: ${user._id
+              } merchantId: ${merchant._id} platformKey: ${platformKey} URL: ${req.protocol
+              }://${req.get("host")}${req.originalUrl}`,
           });
           return res.send({
             success: true,
@@ -132,14 +127,13 @@ router.post("/:platformKey", async (req, res) => {
   } catch (error: any) {
     logger.log({
       level: "error",
-      message: `Get platform's connection url API, ip: ${IP.address()} error: ${
-        error.message
-      } merchantId: ${merchantId} platformKey: ${platformKey} URL: ${
-        req.protocol
-      }://${req.get("host")}${req.originalUrl}`,
+      message: `Get platform's connection url API, ip: ${IP.address()} error: ${error.message
+        } merchantId: ${merchantId} platformKey: ${platformKey} URL: ${req.protocol
+        }://${req.get("host")}${req.originalUrl}`,
     });
     return res.send({ sucess: false, msg: error.message });
   }
 });
+
 
 module.exports = router;
