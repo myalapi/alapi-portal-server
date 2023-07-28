@@ -71,7 +71,7 @@ router.get("/info", async (req, res) => {
 
         const organizations: { id: any; name: any; }[] = platforms[platformKeys.zoho].organizations;
 
-        if (organizations === null || organizations === undefined)
+        if (organizations === null || organizations === undefined || organizations.length ===0)
             throw new Error("No Organizations found");
 
         logger.log({
